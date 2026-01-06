@@ -1,5 +1,6 @@
 export const USER_ROLES = {
     CLIENT: 'client',
+    FREELANCER: 'freelancer',
     
   } as const;
   
