@@ -23,7 +23,15 @@ const STORAGE_KEYS = {
   token: 'auth_token',
   user: 'auth_user',
 } as const;
-
+// Small helper so localStorage JSON parse doesn't crash the app
+function safeJsonParse<T>(value: string | null): T | null {
+    if (!value) return null;
+    try {
+      return JSON.parse(value) as T;
+    } catch {
+      return null;
+    }
+  }
  //backend-ready
 
   const login = async ({ email, password }: LoginCredentials) => {
