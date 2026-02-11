@@ -38,6 +38,16 @@ function safeJsonParse<T>(value: string | null): T | null {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
+     // 1) Hydrate auth state from localStorage on app start (refresh-safe login)
+  useEffect(() => {
+    const savedToken = localStorage.getItem(STORAGE_KEYS.token);
+    const savedUser = safeJsonParse<User>(localStorage.getItem(STORAGE_KEYS.user));
+
+    if (savedToken) setToken(savedToken);
+    if (savedUser) setUser(savedUser);
+  }, []);
+
+  const clearError = () => setError(null);
  //backend-ready
 
   const login = async ({ email, password }: LoginCredentials) => {
