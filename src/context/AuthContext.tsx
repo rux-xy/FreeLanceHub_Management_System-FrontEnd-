@@ -16,3 +16,10 @@ type LoginCredentials = {
   logout: () => void;
   clearError: () => void;
 };
+
+export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+const STORAGE_KEYS = {
+  token: 'auth_token',
+  user: 'auth_user',
+} as const;
