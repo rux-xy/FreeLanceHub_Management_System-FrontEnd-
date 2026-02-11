@@ -63,4 +63,20 @@ const STORAGE_KEYS = {
         localStorage.removeItem(STORAGE_KEYS.token);
         localStorage.removeItem(STORAGE_KEYS.user);
       };
+      const value = useMemo<AuthContextValue>(
+        () => ({
+          user,
+          token,
+          isLoading,
+          error,
+          login,
+          logout,
+          clearError,
+        }),
+        [user, token, isLoading, error]
+      );
+    
+      return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    }
+    
     
