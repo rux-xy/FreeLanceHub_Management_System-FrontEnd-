@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import { AuthProvider } from './context/AuthProvider';
+import { JobsProvider } from './context/JobsContext';
 
 const el = document.getElementById('root');
 
@@ -15,7 +16,9 @@ createRoot(el).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+      <JobsProvider>
+      <App />
+     </JobsProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>
