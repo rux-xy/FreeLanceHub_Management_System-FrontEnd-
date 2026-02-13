@@ -79,6 +79,18 @@ export default function Register() {
           </label>
         </div>
 
+        {error && (
+          <p className="text-red-500 text-sm">{error}</p>
+        )}
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
+        >
+          {isLoading ? 'Creating account...' : 'Register'}
+        </button>
+
         </form>
 
 
