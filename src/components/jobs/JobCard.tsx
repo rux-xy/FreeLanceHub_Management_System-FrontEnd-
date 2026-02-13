@@ -1,5 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import type { MockJob } from '../../mocks/jobs.mock';
-import { useNavigate } from 'react-router-dom'
+
 
 
 
@@ -9,8 +10,6 @@ type JobCardProps = {
 
 function formatTimeAgo(dateString: string) {
 
-    const navigate = useNavigate();
-    
   const diff = Date.now() - new Date(dateString).getTime();
 
   const minutes = Math.floor(diff / (1000 * 60));
@@ -24,8 +23,14 @@ function formatTimeAgo(dateString: string) {
 }
 
 export default function JobCard({ job }: JobCardProps) {
+
+    const navigate = useNavigate();
+
   return (
-    <div className="h-full rounded-xl border bg-white p-5 shadow-sm hover:shadow-md transition flex flex-col">
+   
+    <div
+    onClick={() => navigate(`/jobs/${job.id}`)}
+    className="h-full rounded-xl border bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition cursor-pointer flex flex-col">
 
       {/* Title */}
       <h2 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 leading-7 min-h-[56px]">
