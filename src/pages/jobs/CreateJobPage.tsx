@@ -16,8 +16,19 @@ export default function CreateJobPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    
+    if (!user) return;
+
+    const newJob = {
+      id: Date.now().toString(),
+      title,
+      description,
+      budget: Number(budget),
+      skills: [],
+      createdAt: new Date().toISOString(),
+      clientId: user.id,
+
   }
+};
 
 
 }
