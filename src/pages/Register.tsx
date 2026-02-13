@@ -48,6 +48,15 @@ export default function Register() {
           required
         /> 
 
+          <input
+          type="password"
+          placeholder="Password"
+          className="w-full border rounded px-3 py-2"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
         </form>
 
 
