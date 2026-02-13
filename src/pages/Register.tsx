@@ -25,5 +25,13 @@ export default function Register() {
           catch {
             // error handled in context
           }
+
+          return (
+            <div className="max-w-md mx-auto mt-20 bg-white p-8 rounded shadow">
+            <h2 className="text-2xl font-semibold mb-6 text-center">Register</h2>
+
+
+                </div>
+          );
     
 }
