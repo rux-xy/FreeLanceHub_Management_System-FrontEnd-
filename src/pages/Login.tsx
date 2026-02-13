@@ -4,6 +4,10 @@ import { useAuth } from '../hooks/useAuth';
   
 export default function Login() {
 
+    const { login, isLoading, error, clearError } = useAuth();
+    const navigate = useNavigate();
+  
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    
 }
