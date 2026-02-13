@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { MOCK_JOBS } from '../../mocks/jobs.mock';
+import { useJobs } from '../../hooks/useJobs';
 import JobCard from '../../components/jobs/JobCard';
 
 export default function JobListPage() {
