@@ -19,4 +19,16 @@ export default function Login() {
             navigate('/profile'); // redirect after successful login
           }
 
+          catch {
+            // error handled in context
+          }
+
+};
+
+return (
+    <div className="max-w-md mx-auto mt-20 bg-white p-8 rounded shadow">
+
+    
+    </div>
+);
 }
