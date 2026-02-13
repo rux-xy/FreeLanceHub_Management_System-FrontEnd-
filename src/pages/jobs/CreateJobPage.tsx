@@ -13,4 +13,11 @@ export default function CreateJobPage() {
   const [budget, setBudget] = useState('');
 
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    
+  }
+
+
 }
