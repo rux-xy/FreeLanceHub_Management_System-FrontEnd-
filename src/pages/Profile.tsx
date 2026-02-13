@@ -13,4 +13,14 @@ export default function Profile() {
     return (first + second).toUpperCase();
   }, [user?.name]);
 
+  if (!user) {
+    // This shouldn't happen because the route is protected,
+    // but keeping it makes the component safer.
+    return (
+      <div className="rounded-lg border bg-white p-6">
+        <p className="text-gray-700">No user data available.</p>
+      </div>
+    );
+  }
+
 }
