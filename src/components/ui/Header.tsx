@@ -33,17 +33,32 @@ export default function Header() {
             </>
           ) : (
             <>
-              <NavLink to="/profile" className={linkClass}>
-                Profile
-              </NavLink>
+  <NavLink to="/jobs" className={linkClass}>
+    Jobs
+  </NavLink>
 
-              <button
-                onClick={logout}
-                className="rounded-lg border px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
-              >
-                Logout
-              </button>
-            </>
+  {user.role === 'client' && (
+    <NavLink to="/jobs/create" className={linkClass}>
+      Create Job
+    </NavLink>
+  )}
+
+  <NavLink to="/contracts" className={linkClass}>
+    Contracts
+  </NavLink>
+
+  <NavLink to="/profile" className={linkClass}>
+    Profile
+  </NavLink>
+
+  <button
+    onClick={logout}
+    className="rounded-lg border px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+  >
+    Logout
+  </button>
+</>
+
           )}
         </nav>
       </div>
