@@ -14,4 +14,9 @@ export default function Login() {
         e.preventDefault();
         clearError();
 
+        try {
+            await login({ email, password });
+            navigate('/profile'); // redirect after successful login
+          }
+
 }
