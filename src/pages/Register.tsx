@@ -25,6 +25,7 @@ export default function Register() {
           catch {
             // error handled in context
           }
+        };
 
           return (
             <div className="max-w-md mx-auto mt-20 bg-white p-8 rounded shadow">
@@ -92,9 +93,7 @@ export default function Register() {
         </button>
 
         </form>
-
-
-                </div>
+         </div>
           );
     
-}
+        }
