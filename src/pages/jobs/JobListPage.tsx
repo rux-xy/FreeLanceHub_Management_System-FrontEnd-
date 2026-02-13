@@ -4,17 +4,17 @@ import JobCard from '../../components/jobs/JobCard';
 
 export default function JobListPage() {
   const [search, setSearch] = useState('');
-
+  const { jobs } = useJobs();
   const filteredJobs = useMemo(() => {
     const lower = search.toLowerCase();
 
-    return MOCK_JOBS.filter(
+    return jobs.filter(
       (job) =>
         job.title.toLowerCase().includes(lower) ||
         job.description.toLowerCase().includes(lower) ||
         job.skills.some((skill) => skill.toLowerCase().includes(lower))
     );
-  }, [search]);
+  }, [search,jobs]);
 
   return (
     <div className="space-y-6">
