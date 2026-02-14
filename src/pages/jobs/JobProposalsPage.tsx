@@ -4,3 +4,23 @@ import { useAuth } from "../../hooks/useAuth";
 import { useJobs } from "../../hooks/useJobs";
 import { useProposals } from "../../context/ProposalsContext";
 
+export default function JobProposalsPage() {
+
+    const { jobId } = useParams();
+    const navigate = useNavigate();
+  
+    const { user } = useAuth();
+    const { jobs } = useJobs();
+    const { getProposalsByJobId } = useProposals();
+  
+    const job = useMemo(() => jobs.find((j) => j.id === jobId), [jobs, jobId]);
+  
+    const proposals = useMemo(() => {
+      if (!jobId) return [];
+      return getProposalsByJobId(jobId);
+    }, [jobId, getProposalsByJobId]);
+
+     
+
+
+}
