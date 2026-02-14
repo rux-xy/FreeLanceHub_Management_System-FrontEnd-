@@ -32,45 +32,61 @@ function generateProposalId() {
 
 
 export function ProposalsProvider({ children }: { children: React.ReactNode }) {
-  const [proposals, setProposals] = useState<Proposal[]>(loadInitialProposals);
-
-  const addProposal: ProposalsContextValue["addProposal"] = (data) => {
-    const newProposal: Proposal = {
-      id: generateProposalId(),
-      jobId: data.jobId,
-      freelancerId: data.freelancerId,
-      freelancerName: data.freelancerName,
-      coverLetter: data.coverLetter,
-      proposedBudget: data.proposedBudget,
-      estimatedDays: data.estimatedDays,
-      status: "pending",
-      createdAt: new Date().toISOString(),
+    const [proposals, setProposals] = useState<Proposal[]>(loadInitialProposals);
+  
+    const addProposal: ProposalsContextValue["addProposal"] = (data) => {
+      const newProposal: Proposal = {
+        id: generateProposalId(),
+        jobId: data.jobId,
+        freelancerId: data.freelancerId,
+        freelancerName: data.freelancerName,
+        coverLetter: data.coverLetter,
+        proposedBudget: data.proposedBudget,
+        estimatedDays: data.estimatedDays,
+        status: "pending",
+        createdAt: new Date().toISOString(),
+      };
+  
+      setProposals((prev) => {
+        const updated = [newProposal, ...prev];
+        saveProposals(updated);
+        return updated;
+      });
     };
-
-    setProposals((prev) => {
-      const updated = [newProposal, ...prev];
-      saveProposals(updated);
-      return updated;
-    });
-  };
-
-  const getProposalsByJobId = (jobId: string) => {
-    return proposals.filter((p) => p.jobId === jobId);
-  };
-
-  const value: ProposalsContextValue = {
-    proposals,
-    addProposal,
-    getProposalsByJobId,
-  };
-
-  return (
-    <ProposalsContext.Provider value={value}>
-      {children}
-    </ProposalsContext.Provider>
-  );
-}
-
+  
+    const getProposalsByJobId = (jobId: string) => {
+      return proposals.filter((p) => p.jobId === jobId);
+    };
+  
+    
+    const updateProposalStatus: ProposalsContextValue["updateProposalStatus"] = (
+      proposalId,
+      status
+    ) => {
+      setProposals((prev) => {
+        const updated = prev.map((p) =>
+          p.id === proposalId ? { ...p, status } : p
+        );
+        saveProposals(updated);
+        return updated;
+      });
+    };
+  
+    
+    const value: ProposalsContextValue = {
+      proposals,
+      addProposal,
+      getProposalsByJobId,
+      updateProposalStatus,
+    };
+  
+    return (
+      <ProposalsContext.Provider value={value}>
+        {children}
+      </ProposalsContext.Provider>
+    );
+  }
+  
 
 export function useProposals() {
   const ctx = useContext(ProposalsContext);
