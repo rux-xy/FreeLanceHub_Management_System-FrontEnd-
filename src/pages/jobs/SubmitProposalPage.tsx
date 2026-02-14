@@ -33,4 +33,13 @@ export default function SubmitProposalPage() {
       return;
     }
 
+    if (proposedBudget <= 0) {
+        setError("Proposed budget must be greater than 0.");
+        return;
+      }
+      if (estimatedDays <= 0) {
+        setError("Estimated days must be greater than 0.");
+        return;
+      }
+
 }
