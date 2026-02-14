@@ -21,4 +21,6 @@ export default function ContractDetailsPage() {
     return <div className="p-6">Contract not found</div>;
   }
 
+  const allowed = contract.clientId === user.id || contract.freelancerId === user.id;
+
 }  
