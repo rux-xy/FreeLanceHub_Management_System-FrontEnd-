@@ -7,6 +7,8 @@ export default function ContractDetailsPage() {
     const { user } = useAuth();
     const { getContractById } = useContracts();
 
-
+    if (!user) {
+        return <div className="p-6">Please login to view contract details.</div>;
+      }
 
 }  
