@@ -132,10 +132,7 @@ export default function ContractDetailsPage() {
                 </div>
               ))}
             </div>
-          </div>
-        ) : null}
-      </div>
-      {contract.status !== "completed" && contract.clientId === user.id ? (
+            {contract.status !== "completed" && contract.clientId === user.id ? (
   <div className="pt-4 border-t">
     <button
       type="button"
@@ -147,6 +144,10 @@ export default function ContractDetailsPage() {
   </div>
 ) : null}
 
+          </div>
+        ) : null}
+      </div>
+      
     </div>
   );
 
