@@ -53,3 +53,11 @@ const ContractsContext = createContext<ContractsContextValue | undefined>(
       });
       return newContract;
     };
+
+    const getContractsByUser: ContractsContextValue["getContractsByUser"] = (
+        userId
+      ) => {
+        return contracts.filter(
+          (c) => c.clientId === userId || c.freelancerId === userId
+        );
+      };
