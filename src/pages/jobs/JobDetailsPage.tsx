@@ -40,18 +40,39 @@ export default function JobDetailsPage() {
 
              <p className="text-gray-700 leading-relaxed">    {job.description} </p>
 
-             <button
-        disabled={applied}
-        onClick={() => applyToJob(job.id)}
-        className={`w-full sm:w-auto px-6 py-3 rounded-xl font-semibold transition
-          ${applied
-            ? "bg-green-100 text-green-700 cursor-not-allowed"
-            : "bg-black text-white hover:opacity-90"
-          }`}
-      >
-        {applied ? "Applied" : "Apply Now"}
-      
-        </button>
+             
+             <div className="flex flex-col sm:flex-row gap-3 mt-6">
+  <button
+    type="button"
+    disabled={applied}
+    onClick={() => applyToJob(job.id)}
+    className={`w-full sm:w-auto px-6 py-3 rounded-xl font-semibold transition
+      ${applied ? "bg-green-100 text-green-700 cursor-not-allowed" : "bg-black text-white hover:opacity-90"}`}
+  >
+    {applied ? "Applied" : "Apply Now"}
+  </button>
+
+  {user ? (
+    <Link
+      to={`/jobs/${job.id}/propose`}
+      className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold"
+    >
+      Submit Proposal
+    </Link>
+  ) : (
+    <Link
+      to="/login"
+      className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold"
+    >
+      Login to Submit Proposal
+    </Link>
+  )}
+
+
+        </div>
+
+             
+   
 
         </div>
 
