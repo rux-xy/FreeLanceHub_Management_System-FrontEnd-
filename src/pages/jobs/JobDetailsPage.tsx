@@ -16,6 +16,8 @@ export default function JobDetailsPage() {
         
         return <div className="p-6">Job not found</div>;
       }
+      
+      const isOwner = !!user && user.id === job.createdBy;
 
       const applied = isApplied(job.id);
 
@@ -42,7 +44,11 @@ export default function JobDetailsPage() {
 
              
              <div className="flex flex-col sm:flex-row gap-3 mt-6">
-  <button
+             
+             {!isOwner ? (
+                
+                <button
+
     type="button"
     disabled={applied}
     onClick={() => applyToJob(job.id)}
@@ -50,9 +56,15 @@ export default function JobDetailsPage() {
       ${applied ? "bg-green-100 text-green-700 cursor-not-allowed" : "bg-black text-white hover:opacity-90"}`}
   >
     {applied ? "Applied" : "Apply Now"}
-  </button>
+  
+            </button>
 
-  {user ? (
+            ) : null}
+
+    
+
+{!isOwner ? (
+  user ? (
     <Link
       to={`/jobs/${job.id}/propose`}
       className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold"
@@ -66,9 +78,13 @@ export default function JobDetailsPage() {
     >
       Login to Submit Proposal
     </Link>
-  )}
+  )
+) : null}
 
-{user?.role === "client" ? (
+
+       
+
+{isOwner ? (
   <Link
     to={`/jobs/${job.id}/proposals`}
     className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold"
@@ -76,6 +92,7 @@ export default function JobDetailsPage() {
     View Proposals
   </Link>
 ) : null}
+
 
 
         </div>
