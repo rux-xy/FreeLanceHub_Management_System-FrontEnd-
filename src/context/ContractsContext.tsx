@@ -24,3 +24,7 @@ const ContractsContext = createContext<ContractsContextValue | undefined>(
       return [];
     }
   }
+
+  function saveContracts(contracts: Contract[]) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(contracts));
+  }
