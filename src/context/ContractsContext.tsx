@@ -14,3 +14,13 @@ type ContractsContextValue = {
 const ContractsContext = createContext<ContractsContextValue | undefined>(
     undefined
   );
+
+
+  function safeParseContracts(raw: string | null): Contract[] {
+    if (!raw) return [];
+    try {
+      return JSON.parse(raw) as Contract[];
+    } catch {
+      return [];
+    }
+  }
