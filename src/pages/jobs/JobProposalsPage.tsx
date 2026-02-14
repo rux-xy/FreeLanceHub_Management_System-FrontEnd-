@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { useJobs } from "../../hooks/useJobs";
 import { useProposals } from "../../context/ProposalsContext";
+import { useContracts } from "../../context/ContractsContext";
 
 
 export default function JobProposalsPage() {
