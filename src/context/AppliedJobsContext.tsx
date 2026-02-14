@@ -14,3 +14,12 @@ type AppliedJobsContextType = {
       const stored = localStorage.getItem("appliedJobIds");
       return stored ? JSON.parse(stored) : [];
     });
+
+    const applyToJob = (jobId: string) => {
+        setAppliedJobIds(prev => {
+          if (prev.includes(jobId)) return prev;
+          const updated = [...prev, jobId];
+          localStorage.setItem("appliedJobIds", JSON.stringify(updated));
+          return updated;
+        });
+      };
