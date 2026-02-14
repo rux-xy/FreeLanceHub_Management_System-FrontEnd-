@@ -20,6 +20,22 @@ export function JobsProvider({ children }: { children: React.ReactNode }) {
     },
     [jobs]
   );
+
+  const updateJobStatus: JobsContextValue["updateJobStatus"] = (jobId, status) => {
+    setJobs((prev) => {
+      const updated = prev.map((j) =>
+        j.id === jobId ? { ...j, status } : j
+      );
+  
+      // ✅ Persist if you already save jobs to localStorage
+      // If you have a helper like saveJobs(updated), call it instead.
+      localStorage.setItem("freelancehub_jobs", JSON.stringify(updated));
+  
+      return updated;
+    });
+  };
+  
+
   const updateJobStatus: JobsContextValue["updateJobStatus"] = (jobId, status) => {
     setJobs((prev) => {
       const updated = prev.map((j) =>
