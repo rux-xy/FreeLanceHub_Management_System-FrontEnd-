@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // ✅ define register BEFORE useMemo value
+  //define register BEFORE useMemo value
   const registerUser = async ({ email, password, name, role }: RegisterPayload) => {
     setIsLoading(true);
     setError(null);

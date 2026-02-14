@@ -46,7 +46,7 @@ export default function JobDetailsPage() {
             : "bg-black text-white hover:opacity-90"
           }`}
       >
-        {applied ? "Applied ✅" : "Apply Now"}
+        {applied ? "Applied" : "Apply Now"}
       
         </button>
 
