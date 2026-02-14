@@ -12,6 +12,8 @@ import ContractListPage from './pages/contracts/ContractListPage';
 import JobDetailsPage from './pages/jobs/JobDetailsPage';
 import AppliedJobsPage from "./pages/jobs/AppliedJobsPage";
 import SubmitProposalPage from "./pages/jobs/SubmitProposalPage";
+import JobProposalsPage from "./pages/jobs/JobProposalsPage";
+
 
 
 export default function App() {
