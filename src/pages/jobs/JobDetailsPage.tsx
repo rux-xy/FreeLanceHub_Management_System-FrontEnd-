@@ -32,7 +32,8 @@ export default function JobDetailsPage() {
 
              <p className="text-gray-700 leading-relaxed">    {job.description} </p>
 
-             
+             <button className="mt-6 px-6 py-3 bg-black text-white rounded-lg hover:opacity-90">    Apply Now    </button>
+
         </div>
 
           
