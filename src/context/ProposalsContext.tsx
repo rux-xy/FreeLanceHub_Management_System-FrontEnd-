@@ -1,11 +1,15 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+/* eslint-disable react-refresh/only-export-components */
+
+import React, { createContext, useContext, useState } from "react";
 import type { Proposal } from "../types/proposal.types";
 import type { ProposalsContextValue } from "./proposals.context";
 import { proposalsMock } from "../mocks/proposals.mock";
 
 const STORAGE_KEY = "freelancehub_proposals";
 
-const ProposalsContext = createContext<ProposalsContextValue | undefined>(undefined);
+//Context instance
+export const ProposalsContext =
+  createContext<ProposalsContextValue | undefined>(undefined);
 
 function loadInitialProposals(): Proposal[] {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -23,9 +27,9 @@ function saveProposals(proposals: Proposal[]) {
 }
 
 function generateProposalId() {
-  // human-readable, easy to debug
   return `prop_${Math.random().toString(16).slice(2, 8)}_${Date.now()}`;
 }
+
 
 export function ProposalsProvider({ children }: { children: React.ReactNode }) {
   const [proposals, setProposals] = useState<Proposal[]>(loadInitialProposals);
@@ -54,20 +58,24 @@ export function ProposalsProvider({ children }: { children: React.ReactNode }) {
     return proposals.filter((p) => p.jobId === jobId);
   };
 
-  const value = useMemo<ProposalsContextValue>(
-    () => ({
-      proposals,
-      addProposal,
-      getProposalsByJobId,
-    }),
-    [proposals]
-  );
+  const value: ProposalsContextValue = {
+    proposals,
+    addProposal,
+    getProposalsByJobId,
+  };
 
-  return <ProposalsContext.Provider value={value}>{children}</ProposalsContext.Provider>;
+  return (
+    <ProposalsContext.Provider value={value}>
+      {children}
+    </ProposalsContext.Provider>
+  );
 }
+
 
 export function useProposals() {
   const ctx = useContext(ProposalsContext);
-  if (!ctx) throw new Error("useProposals must be used inside ProposalsProvider");
+  if (!ctx) {
+    throw new Error("useProposals must be used inside ProposalsProvider");
+  }
   return ctx;
 }
