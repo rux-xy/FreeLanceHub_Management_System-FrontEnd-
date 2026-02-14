@@ -11,6 +11,8 @@ import CreateJobPage from './pages/jobs/CreateJobPage';
 import ContractListPage from './pages/contracts/ContractListPage';
 import JobDetailsPage from './pages/jobs/JobDetailsPage';
 import AppliedJobsPage from "./pages/jobs/AppliedJobsPage";
+import SubmitProposalPage from "./pages/jobs/SubmitProposalPage";
+
 
 export default function App() {
   return (
@@ -23,18 +25,14 @@ export default function App() {
         <Route path="register" element={<Register />} />
 
         {/* Protected routes */}
+       
         <Route path="profile"    element={<ProtectedRoute><Profile /></ProtectedRoute> } />
-
-
         <Route path="jobs" element={<JobListPage />} />
-
-      <Route path="jobs/create" element={<ProtectedRoute requiredRole="client"> <CreateJobPage /></ProtectedRoute> } />
-
-      <Route path="contracts" element= {<ProtectedRoute> <ContractListPage /> </ProtectedRoute>}/>
-
-      <Route path="/jobs/:jobId" element={<JobDetailsPage />} />
-
-      <Route path="/jobs/applied" element={<AppliedJobsPage />} />
+        <Route path="jobs/create" element={<ProtectedRoute requiredRole="client"> <CreateJobPage /></ProtectedRoute> } />
+        <Route path="contracts" element= {<ProtectedRoute> <ContractListPage /> </ProtectedRoute>}/>
+        <Route path="/jobs/:jobId" element={<JobDetailsPage />} />
+        <Route path="/jobs/applied" element={<AppliedJobsPage />} />
+        <Route path="/jobs/:id/propose" element={<SubmitProposalPage />} />
 
       </Route>
 
