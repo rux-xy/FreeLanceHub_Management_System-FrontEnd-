@@ -8,6 +8,8 @@ export default function ContractDetailsPage() {
     const { contractId } = useParams();
     const { user } = useAuth();
     const { getContractById, updateContract } = useContracts();
+    const { updateJobStatus } = useJobs();
+
 
     if (!user) {
         return <div className="p-6">Please login to view contract details.</div>;
@@ -42,6 +44,21 @@ export default function ContractDetailsPage() {
       </div>
     );
   }
+
+  const handleComplete = () => {
+    if (!contract) return;
+  
+    // 1) update contract
+    updateContract(contract.id, {
+      status: "completed",
+      paymentStatus: "completed",
+      endDate: new Date().toISOString(),
+    });
+  
+    // 2) update related job
+    updateJobStatus(contract.jobId, "completed");
+  };
+  
 
   return (
     <div className="max-w-5xl mx-auto p-6">
