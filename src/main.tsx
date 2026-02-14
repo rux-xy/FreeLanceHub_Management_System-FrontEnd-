@@ -19,7 +19,9 @@ createRoot(el).render(
     <BrowserRouter>
       <AuthProvider>
       <JobsProvider>
+      <AppliedJobsProvider>
       <App />
+      </AppliedJobsProvider>
      </JobsProvider>
       </AuthProvider>
     </BrowserRouter>
