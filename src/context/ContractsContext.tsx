@@ -51,3 +51,5 @@ const ContractsContext = createContext<ContractsContextValue | undefined>(
         saveContracts(updated);
         return updated;
       });
+      return newContract;
+    };
