@@ -41,5 +41,58 @@ export default function JobProposalsPage() {
         );
       }
 
-      return ()
+      return (
+
+        <div className="max-w-5xl mx-auto p-6">
+        <div className="bg-white border rounded-xl p-6 space-y-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold">Proposals</h1>
+              <p className="text-sm text-gray-600 mt-1">
+                Job: <span className="font-medium text-gray-900">{job.title}</span>
+              </p>
+            </div>
+  
+            <Link
+              to={`/jobs/${job.id}`}
+              className="text-sm font-semibold px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
+            >
+              ← Back
+            </Link>
+          </div>
+  
+          {proposals.length === 0 ? (
+            <div className="rounded-lg bg-gray-50 border p-4 text-gray-700">
+              No proposals yet.
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {proposals.map((p) => (
+                <div key={p.id} className="border rounded-xl p-5 space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div>
+                      <p className="font-semibold">{p.freelancerName}</p>
+                      <p className="text-sm text-gray-600">
+                        Budget: <span className="font-medium">${p.proposedBudget}</span> •{" "}
+                        {p.estimatedDays} days • Status:{" "}
+                        <span className="font-medium">{p.status}</span>
+                      </p>
+                    </div>
+  
+                    <span className="text-xs text-gray-500">
+                      {new Date(p.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+  
+                  <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                    {p.coverLetter}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      );
 }
