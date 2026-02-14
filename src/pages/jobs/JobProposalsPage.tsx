@@ -23,5 +23,23 @@ export default function JobProposalsPage() {
     if (!jobId) return <div className="p-6">Invalid job</div>;
     if (!job) return <div className="p-6">Job not found</div>;
 
+    if (!user) {
+        return (
+          <div className="max-w-4xl mx-auto p-6">
+            <div className="bg-white border rounded-xl p-6 space-y-4">
+              <h1 className="text-xl font-bold">View Proposals</h1>
+              <p className="text-gray-600">Please login to view proposals.</p>
+              <button
+                type="button"
+                onClick={() => navigate("/login")}
+                className="px-5 py-2.5 rounded-lg bg-black text-white hover:opacity-90"
+              >
+                Go to Login
+              </button>
+            </div>
+          </div>
+        );
+      }
 
+      
 }
