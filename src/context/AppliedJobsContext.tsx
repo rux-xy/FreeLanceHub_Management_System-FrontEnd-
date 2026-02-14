@@ -23,3 +23,12 @@ type AppliedJobsContextType = {
           return updated;
         });
       };
+
+      const removeApplication = (jobId: string) => {
+        setAppliedJobIds(prev => {
+          const updated = prev.filter(id => id !== jobId);
+          localStorage.setItem("appliedJobIds", JSON.stringify(updated));
+          return updated;
+        });
+      };
+    
