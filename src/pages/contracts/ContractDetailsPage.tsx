@@ -67,11 +67,17 @@ export default function ContractDetailsPage() {
           <div>
             <h1 className="text-2xl font-bold">{contract.title}</h1>
             <p className="text-sm text-gray-600 mt-1">
-              Status: <span className="font-medium text-gray-900">{contract.status}</span> • Payment:{" "}
-              <span className="font-medium text-gray-900">{contract.paymentStatus}</span>
+              Status:{" "}
+              <span className="font-medium text-gray-900">
+                {contract.status}
+              </span>{" "}
+              • Payment:{" "}
+              <span className="font-medium text-gray-900">
+                {contract.paymentStatus}
+              </span>
             </p>
           </div>
-
+  
           <Link
             to="/contracts"
             className="text-sm font-semibold px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
@@ -79,41 +85,51 @@ export default function ContractDetailsPage() {
             ← Back
           </Link>
         </div>
-
+  
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="border rounded-xl p-4">
             <p className="text-sm text-gray-500">Client</p>
-            <p className="font-semibold">{contract.clientName ?? contract.clientId}</p>
+            <p className="font-semibold">
+              {contract.clientName ?? contract.clientId}
+            </p>
           </div>
-
+  
           <div className="border rounded-xl p-4">
             <p className="text-sm text-gray-500">Freelancer</p>
-            <p className="font-semibold">{contract.freelancerName ?? contract.freelancerId}</p>
+            <p className="font-semibold">
+              {contract.freelancerName ?? contract.freelancerId}
+            </p>
           </div>
-
+  
           <div className="border rounded-xl p-4">
             <p className="text-sm text-gray-500">Total Amount</p>
             <p className="font-semibold">${contract.totalAmount}</p>
           </div>
-
+  
           <div className="border rounded-xl p-4">
             <p className="text-sm text-gray-500">Start Date</p>
-            <p className="font-semibold">{new Date(contract.startDate).toLocaleString()}</p>
+            <p className="font-semibold">
+              {new Date(contract.startDate).toLocaleString()}
+            </p>
           </div>
         </div>
-
+  
         <div className="border rounded-xl p-4">
           <p className="text-sm text-gray-500 mb-1">Description</p>
-          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">{contract.description}</p>
+          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+            {contract.description}
+          </p>
         </div>
-
+  
         {contract.terms ? (
           <div className="border rounded-xl p-4">
             <p className="text-sm text-gray-500 mb-1">Terms</p>
-            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">{contract.terms}</p>
+            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+              {contract.terms}
+            </p>
           </div>
         ) : null}
-
+  
         {contract.milestones && contract.milestones.length > 0 ? (
           <div className="border rounded-xl p-4 space-y-3">
             <p className="text-sm text-gray-500">Milestones</p>
@@ -124,31 +140,35 @@ export default function ContractDetailsPage() {
                     <p className="font-semibold">{m.title}</p>
                     <p className="text-sm text-gray-600">{m.status}</p>
                   </div>
-                  <p className="text-sm text-gray-700 mt-1">{m.description}</p>
+                  <p className="text-sm text-gray-700 mt-1">
+                    {m.description}
+                  </p>
                   <p className="text-sm text-gray-600 mt-1">
-                    Amount: <span className="font-medium">${m.amount}</span> • Due:{" "}
+                    Amount:{" "}
+                    <span className="font-medium">${m.amount}</span> • Due:{" "}
                     {new Date(m.dueDate).toLocaleDateString()}
                   </p>
                 </div>
               ))}
             </div>
-            {contract.status !== "completed" && contract.clientId === user.id ? (
-  <div className="pt-4 border-t">
-    <button
-      type="button"
-      onClick={handleComplete}
-      className="px-6 py-3 rounded-xl bg-black text-white font-semibold hover:opacity-90"
-    >
-      Complete Contract
-    </button>
-  </div>
-) : null}
-
+          </div>
+        ) : null}
+  
+        {contract.status !== "completed" &&
+        contract.clientId === user.id ? (
+          <div className="pt-4 border-t">
+            <button
+              type="button"
+              onClick={handleComplete}
+              className="px-6 py-3 rounded-xl bg-black text-white font-semibold hover:opacity-90"
+            >
+              Complete Contract
+            </button>
           </div>
         ) : null}
       </div>
-      
     </div>
   );
+  
 
 }  
