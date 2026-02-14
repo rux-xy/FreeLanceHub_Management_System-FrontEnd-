@@ -20,4 +20,8 @@ export default function SubmitProposalPage() {
     const [estimatedDays, setEstimatedDays] = useState<number>(7);
     const [error, setError] = useState<string>("");
 
+    if (!id) return <div className="p-6">Invalid job</div>;
+  if (!job) return <div className="p-6">Job not found</div>;
+  if (!user) return <div className="p-6">Please login to submit a proposal.</div>;
+
 }
