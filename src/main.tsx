@@ -5,6 +5,8 @@ import './index.css';
 import App from './App';
 import { AuthProvider } from './context/AuthProvider';
 import { JobsProvider } from './context/JobsContext';
+import { AppliedJobsProvider } from "./context/AppliedJobsContext";
+
 
 const el = document.getElementById('root');
 
