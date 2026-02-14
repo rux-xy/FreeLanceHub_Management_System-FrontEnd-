@@ -4,6 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useJobs } from "../../hooks/useJobs";
 import { useProposals } from "../../context/ProposalsContext";
 
+
 export default function JobProposalsPage() {
 
     const { jobId } = useParams();
@@ -11,7 +12,7 @@ export default function JobProposalsPage() {
   
     const { user } = useAuth();
     const { jobs } = useJobs();
-    const { getProposalsByJobId } = useProposals();
+    const { getProposalsByJobId, updateProposalStatus } = useProposals();
   
     const job = useMemo(() => jobs.find((j) => j.id === jobId), [jobs, jobId]);
   
@@ -20,8 +21,32 @@ export default function JobProposalsPage() {
       return getProposalsByJobId(jobId);
     }, [jobId, getProposalsByJobId]);
 
+    
+
     if (!jobId) return <div className="p-6">Invalid job</div>;
     if (!job) return <div className="p-6">Job not found</div>;
+
+    const isOwner = !!user && user.id === job.createdBy;
+
+if (!isOwner) {
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="bg-white border rounded-xl p-6 space-y-3">
+        <h1 className="text-xl font-bold">Access denied</h1>
+        <p className="text-gray-600">
+          Only the job owner can view proposals for this job.
+        </p>
+        <Link
+          to={`/jobs/${job.id}`}
+          className="inline-flex px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 font-semibold text-sm"
+        >
+          ← Back to Job
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 
     if (!user) {
         return (
@@ -87,6 +112,35 @@ export default function JobProposalsPage() {
                   <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
                     {p.coverLetter}
                   </p>
+
+                  <div className="flex flex-col sm:flex-row gap-2 pt-2">
+     <button
+    type="button"
+    onClick={() => updateProposalStatus(p.id, "accepted")}
+    disabled={p.status === "accepted"}
+    className={`px-4 py-2 rounded-lg font-semibold text-sm transition
+      ${p.status === "accepted"
+        ? "bg-green-100 text-green-700 cursor-not-allowed"
+        : "bg-green-600 text-white hover:opacity-90"
+      }`}
+     >
+    {p.status === "accepted" ? "Accepted" : "Accept"}
+    </button>
+
+     <button
+    type="button"
+    onClick={() => updateProposalStatus(p.id, "rejected")}
+    disabled={p.status === "rejected"}
+    className={`px-4 py-2 rounded-lg font-semibold text-sm transition
+      ${p.status === "rejected"
+        ? "bg-red-100 text-red-700 cursor-not-allowed"
+        : "bg-red-600 text-white hover:opacity-90"
+      }`}
+  >
+    {p.status === "rejected" ? "Rejected" : "Reject"}
+  </button>
+    </div>
+
                 </div>
               ))}
             </div>
