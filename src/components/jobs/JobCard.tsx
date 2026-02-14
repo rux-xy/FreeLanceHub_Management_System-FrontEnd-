@@ -28,7 +28,8 @@ export default function JobCard({ job }: JobCardProps) {
     const navigate = useNavigate();
 
   return (
-   
+    <Link to={`/jobs/${job.id}`}>
+    <div className="card">
     <div
     onClick={() => navigate(`/jobs/${job.id}`)}
     className="h-full rounded-xl border bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition cursor-pointer flex flex-col">
@@ -62,5 +63,8 @@ export default function JobCard({ job }: JobCardProps) {
         <span>{formatTimeAgo(job.createdAt)}</span>
       </div>
     </div>
+    </div>
+  </Link>
+    
   );
 }
