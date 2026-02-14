@@ -34,7 +34,8 @@ export default function CreateJobPage() {
   };
 
   return (
-    <div className="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-sm border">
+    <div className="max-w-5xl mx-auto p-8">
+     
       <h1 className="text-2xl font-semibold mb-6">Create New Job</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
