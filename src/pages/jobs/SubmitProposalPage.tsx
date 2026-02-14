@@ -24,4 +24,13 @@ export default function SubmitProposalPage() {
   if (!job) return <div className="p-6">Job not found</div>;
   if (!user) return <div className="p-6">Please login to submit a proposal.</div>;
 
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (coverLetter.trim().length < 20) {
+      setError("Cover letter should be at least 20 characters.");
+      return;
+    }
+
 }
