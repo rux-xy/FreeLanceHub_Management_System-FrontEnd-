@@ -34,6 +34,8 @@ export default function App() {
 
       <Route path="/jobs/:jobId" element={<JobDetailsPage />} />
 
+      <Route path="/jobs/applied" element={<AppliedJobsPage />} />
+
       </Route>
 
       {/* Catch-all 404 */}
