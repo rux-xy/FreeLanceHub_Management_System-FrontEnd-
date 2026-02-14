@@ -4,17 +4,26 @@
   }
 
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply text-gray-900 antialiased;
+    min-height: 100vh;
+
+    /* Premium soft background */
+    background:
+      radial-gradient(1200px 600px at 20% -10%, rgba(0, 0, 0, 0.05), transparent 60%),
+      radial-gradient(1000px 600px at 90% 0%, rgba(0, 0, 0, 0.04), transparent 55%),
+      linear-gradient(to bottom, #fafafa, #f4f4f5);
   }
 
-  /* Better focus styles for accessibility */
+  /* Better focus styles for accessibility (cleaner) */
   *:focus-visible {
-    @apply outline-2 outline-offset-2 outline-blue-500;
+    @apply outline-2 outline-offset-2 outline-black/20;
   }
 
   /* Basic form input defaults */
-  input, textarea, select {
-    @apply focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+  input,
+  textarea,
+  select {
+    @apply focus:ring-2 focus:ring-black/10 focus:border-gray-300;
   }
 }
 
