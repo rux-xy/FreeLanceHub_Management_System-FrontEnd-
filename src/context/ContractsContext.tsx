@@ -129,6 +129,7 @@ export function ContractsProvider({ children }: { children: React.ReactNode }) {
     addContract,
     getContractsByUser,
     getContractById,
+    updateContract,
   };
 
   return <ContractsContext.Provider value={value}>{children}</ContractsContext.Provider>;
