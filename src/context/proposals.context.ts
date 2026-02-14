@@ -6,4 +6,6 @@ export type ProposalsContextValue = {
   proposals: Proposal[];
   addProposal: (data: Omit<Proposal, "id" | "createdAt" | "status">) => void;
   getProposalsByJobId: (jobId: string) => Proposal[];
+
+  updateProposalStatus: (proposalId: string, status: "accepted" | "rejected") => void;
 };

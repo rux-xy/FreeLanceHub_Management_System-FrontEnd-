@@ -44,58 +44,46 @@ export default function JobDetailsPage() {
 
              
              <div className="flex flex-col sm:flex-row gap-3 mt-6">
-             
-             {!isOwner ? (
-                
-                <button
+  {!isOwner ? (
+    <button
+      type="button"
+      disabled={applied}
+      onClick={() => applyToJob(job.id)}
+      className={`w-full sm:w-auto px-6 py-3 rounded-xl font-semibold transition
+        ${applied ? "bg-green-100 text-green-700 cursor-not-allowed" : "bg-black text-white hover:opacity-90"}`}
+    >
+      {applied ? "Applied" : "Apply Now"}
+    </button>
+  ) : null}
 
-    type="button"
-    disabled={applied}
-    onClick={() => applyToJob(job.id)}
-    className={`w-full sm:w-auto px-6 py-3 rounded-xl font-semibold transition
-      ${applied ? "bg-green-100 text-green-700 cursor-not-allowed" : "bg-black text-white hover:opacity-90"}`}
-  >
-    {applied ? "Applied" : "Apply Now"}
-  
-            </button>
+  {!isOwner ? (
+    user ? (
+      <Link
+        to={`/jobs/${job.id}/propose`}
+        className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold"
+      >
+        Submit Proposal
+      </Link>
+    ) : (
+      <Link
+        to="/login"
+        className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold"
+      >
+        Login to Submit Proposal
+      </Link>
+    )
+  ) : null}
 
-            ) : null}
-
-    
-
-{!isOwner ? (
-  user ? (
+  {isOwner ? (
     <Link
-      to={`/jobs/${job.id}/propose`}
+      to={`/jobs/${job.id}/proposals`}
       className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold"
     >
-      Submit Proposal
+      View Proposals
     </Link>
-  ) : (
-    <Link
-      to="/login"
-      className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold"
-    >
-      Login to Submit Proposal
-    </Link>
-  )
-) : null}
+  ) : null}
+</div>
 
-
-       
-
-{isOwner ? (
-  <Link
-    to={`/jobs/${job.id}/proposals`}
-    className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 font-semibold"
-  >
-    View Proposals
-  </Link>
-) : null}
-
-
-
-        </div>
 
              
    
