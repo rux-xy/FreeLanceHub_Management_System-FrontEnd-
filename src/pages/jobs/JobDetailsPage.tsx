@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useJobs } from "../../hooks/useJobs";
+import { useAppliedJobs } from "../../context/AppliedJobsContext";
 
 export default function JobDetailsPage() {
 
