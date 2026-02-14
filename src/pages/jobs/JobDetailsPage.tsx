@@ -1,6 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useJobs } from "../../hooks/useJobs";
 import { useAppliedJobs } from "../../hooks/useAppliedJobs";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function JobDetailsPage() {
 
