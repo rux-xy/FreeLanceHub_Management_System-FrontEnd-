@@ -29,22 +29,27 @@ export default function JobCard({ job }: JobCardProps) {
 
   return (
     <Link to={`/jobs/${job.id}`}>
+
     <div className="card">
+
     <div
     onClick={() => navigate(`/jobs/${job.id}`)}
     className="h-full rounded-xl border bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition cursor-pointer flex flex-col">
 
       {/* Title */}
+
       <h2 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 leading-7 min-h-[56px]">
         {job.title}
       </h2>
 
       {/* Description */}
+
       <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-5 min-h-[40px]">
         {job.description}
       </p>
 
       {/* Skills */}
+
       <div className="flex flex-wrap gap-2 mb-4 min-h-[32px] overflow-hidden">
         {job.skills.slice(0, 3).map((skill) => (
           <span
@@ -57,13 +62,18 @@ export default function JobCard({ job }: JobCardProps) {
       </div>
 
       {/* Footer */}
+
       <div className="mt-auto flex items-center justify-between text-sm text-gray-500">
 
         <span>Rs. {job.budget}</span>
         <span>{formatTimeAgo(job.createdAt)}</span>
+        
       </div>
+
     </div>
+
     </div>
+
   </Link>
     
   );
