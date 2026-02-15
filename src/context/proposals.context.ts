@@ -1,3 +1,4 @@
+import { createContext } from 'react';
 import type { Proposal } from "../types/proposal.types";
 
 /**
@@ -17,4 +18,7 @@ export type ProposalsContextValue = {
   getProposalsByJobId: (jobId: string) => Proposal[];
   updateProposalStatus: (proposalId: string, status: Proposal["status"]) => void;
 };
+
+// Create the context with undefined as default (will be provided by ProposalsProvider)
+export const ProposalsContext = createContext<ProposalsContextValue | undefined>(undefined);
 

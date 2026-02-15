@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useJobs } from "../../hooks/useJobs";
 import { useAuth } from "../../hooks/useAuth";
-import { useProposals } from "../../context/ProposalsContext";
+import { useProposals } from "../../hooks/useProposals";
 
 type NavState = {
   intent?: "apply" | "proposal";
@@ -95,8 +95,6 @@ export default function SubmitProposalPage() {
 
     addProposal({
       jobId: job.id,
-      freelancerId: user.id,
-      freelancerName: user.name,
       coverLetter: coverLetter.trim(),
       proposedBudget,
       estimatedDays,

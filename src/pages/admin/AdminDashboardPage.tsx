@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useJobs } from "../../hooks/useJobs";
-import { useProposals } from "../../context/ProposalsContext";
+import { useProposals } from "../../hooks/useProposals";
 import { useContracts } from "../../context/ContractsContext";
 
 export default function AdminDashboardPage() {
