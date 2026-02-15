@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
@@ -17,25 +17,35 @@ export default function Register() {
   const navState = (location.state ?? {}) as NavState;
 
   const forcedFreelancer = navState.forceRole === "freelancer";
-  const redirectTo = useMemo(() => navState.from ?? "/profile", [navState.from]);
+
+  const redirectTo = useMemo(() => {
+    return navState.from ?? "/profile";
+  }, [navState.from]);
+
+  // ✅ no useEffect needed (avoids the warning)
+  const [role, setRole] = useState<"client" | "freelancer">(
+    forcedFreelancer ? "freelancer" : "client"
+  );
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"client" | "freelancer">("freelancer");
-
-  useEffect(() => {
-    if (forcedFreelancer) setRole("freelancer");
-  }, [forcedFreelancer]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
+
     try {
-      await register({ name, email, password, role: forcedFreelancer ? "freelancer" : role });
+      await register({
+        name,
+        email,
+        password,
+        role: forcedFreelancer ? "freelancer" : role,
+      });
+
       navigate(redirectTo);
     } catch {
-      // handled in context
+      // handled in auth context
     }
   };
 
@@ -48,13 +58,9 @@ export default function Register() {
           <div className="mt-4 rounded-xl border bg-amber-50 px-4 py-3 text-amber-900">
             <p className="font-semibold">Freelancer account required</p>
             <p className="text-sm mt-1">
-              To apply for jobs or submit proposals, you must be registered as a{" "}
+              To apply or submit proposals, you must register as a{" "}
               <b>freelancer</b>. Already have a freelancer account?{" "}
-              <Link
-                to="/login"
-                state={navState}
-                className="underline font-semibold"
-              >
+              <Link to="/login" state={navState} className="underline font-semibold">
                 Login here
               </Link>
               .
@@ -103,12 +109,11 @@ export default function Register() {
                 type="radio"
                 checked={role === "freelancer"}
                 onChange={() => setRole("freelancer")}
-                disabled={false}
               />
               <span>Freelancer</span>
             </label>
 
-            <label className="flex items-center gap-2 opacity-100">
+            <label className="flex items-center gap-2">
               <input
                 type="radio"
                 checked={role === "client"}
@@ -120,7 +125,7 @@ export default function Register() {
 
             {forcedFreelancer ? (
               <p className="text-xs text-zinc-500">
-                Client role is disabled because you came here from Apply/Proposal.
+                Client role is disabled because you came from Apply/Proposal.
               </p>
             ) : null}
           </div>
