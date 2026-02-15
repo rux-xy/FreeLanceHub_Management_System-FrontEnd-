@@ -6,7 +6,7 @@ function lerp(a: number, b: number, t: number) {
 }
 
 export default function HomePage() {
-  // 0..1 based on first 900px (less “scroll so much”)
+  // 0..1 based on first 900px of scroll
   const p = useScrollProgress(900);
 
   const heroOpacity = useMemo(
@@ -20,8 +20,7 @@ export default function HomePage() {
 
   return (
     <div className="text-white">
-      {/* ✅ less scroll area */}
-      <div className="min-h-[180vh] relative">
+      <div className="relative">
         {/* Sticky hero */}
         <section
           id="home-hero"
@@ -39,11 +38,13 @@ export default function HomePage() {
             <div className="absolute -inset-[30%] opacity-60 bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.45),transparent_55%),radial-gradient(circle_at_70%_60%,rgba(34,211,238,0.35),transparent_55%),radial-gradient(circle_at_40%_80%,rgba(244,63,94,0.25),transparent_60%)]" />
           </div>
 
+          {/* Dim overlay */}
           <div
             className="absolute inset-0 bg-black"
             style={{ opacity: bgDim }}
           />
 
+          {/* Floating tiles */}
           <FloatingTiles drift={drift} />
 
           {/* Center content */}
@@ -84,10 +85,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Reveal section */}
-        <section className="absolute left-0 right-0 bottom-0 h-screen flex items-center justify-center">
-          <div className="max-w-4xl px-6 text-center">
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-black">
+        {/* Spacer so hero can fade out before next content */}
+        <div className="h-[90vh]" />
+
+        {/* Reveal section (NORMAL FLOW) */}
+        <section className="relative bg-white text-black py-24">
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight">
               Taste isn’t born.
               <br />
               It’s built.
@@ -103,28 +107,27 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="absolute inset-0 -z-10 bg-white" />
           <div className="absolute inset-0 -z-10 opacity-60 bg-[radial-gradient(circle_at_50%_0%,rgba(0,0,0,0.10),transparent_55%)]" />
         </section>
-      </div>
 
-      {/* Normal content */}
-      <section className="bg-white text-black py-20">
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-6">
-          <FeatureCard
-            title="Post Jobs"
-            desc="Create jobs with budget, skills, and deadlines."
-          />
-          <FeatureCard
-            title="Send Proposals"
-            desc="Apply with cover letters, pricing, and timelines."
-          />
-          <FeatureCard
-            title="Manage Contracts"
-            desc="Accept offers and track milestones and status."
-          />
-        </div>
-      </section>
+        {/* Normal content */}
+        <section className="bg-white text-black py-20">
+          <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-6">
+            <FeatureCard
+              title="Post Jobs"
+              desc="Create jobs with budget, skills, and deadlines."
+            />
+            <FeatureCard
+              title="Send Proposals"
+              desc="Apply with cover letters, pricing, and timelines."
+            />
+            <FeatureCard
+              title="Manage Contracts"
+              desc="Accept offers and track milestones and status."
+            />
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
