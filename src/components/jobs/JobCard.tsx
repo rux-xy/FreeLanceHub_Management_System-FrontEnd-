@@ -24,15 +24,20 @@ export default function JobCard({ job }: Props) {
       className="group w-full text-left"
     >
           <div
-     className="relative overflow-hidden rounded-2xl border border-zinc-200 
-                bg-gradient-to-b from-white to-zinc-50 
-                shado w-sm 
-                transition-all duration-300 ease-out 
-                hover:-translate-y-1.5 
-                hover:shadow-2xl hover:shadow-black/15 
-                hover:border-zinc-300 
-                group"
+    className="group relative overflow-hidden rounded-2xl border border-zinc-950/10
+    bg-gradient-to-b from-white/95 via-white/80 to-zinc-50/70 backdrop-blur-xl
+    shadow-[0_14px_40px_rgba(0,0,0,0.10)]
+    transition-all duration-300 ease-out transform-gpu
+    hover:-translate-y-1.5 hover:shadow-[0_22px_70px_rgba(0,0,0,0.16)]
+    hover:border-zinc-950/15"
+    
+     
           >
+
+            {/* Hover aura (matches layout corner glow) */}
+<div className="pointer-events-none absolute -inset-2 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100
+  bg-gradient-to-r from-indigo-200/55 via-transparent to-cyan-200/55 blur-2xl" />
+
 
             {/* soft aura glow on hover */}
 <div className="pointer-events-none absolute -inset-1 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 
@@ -47,7 +52,7 @@ export default function JobCard({ job }: Props) {
 </div>
 
 
-        <div className="p-6 space-y-4">
+        <div className="relative p-6 space-y-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h3 className="text-lg font-bold text-zinc-900 leading-snug">
