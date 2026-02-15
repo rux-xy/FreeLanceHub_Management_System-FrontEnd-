@@ -1,13 +1,10 @@
-import React, { useMemo } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { useMemo } from "react";
 import { useScrollProgress } from "../../hooks/useScrollProgress";
 
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t;
-}
-function clamp01(n: number) {
-  return Math.min(1, Math.max(0, n));
 }
 function cx(...parts: Array<string | false | undefined | null>) {
   return parts.filter(Boolean).join(" ");
@@ -15,15 +12,16 @@ function cx(...parts: Array<string | false | undefined | null>) {
 
 /**
  * Apple-ish nav:
- * - Top: clean text buttons
- * - Scrolled: pills + stronger contrast
+ * - at top: plain black text
+ * - as you scroll: frosted white bar + pills
  */
-function navItemClass(isActive: boolean, mode: "top" | "scrolled") {
+function navItemClass(isActive: boolean, t: number) {
   const base =
-    "inline-flex items-center rounded-full px-3 py-2 text-sm font-medium " +
-    "transition-all duration-200 ease-out select-none";
+    "inline-flex items-center rounded-full px-3 py-2 text-sm font-medium select-none " +
+    "transition-all duration-200 ease-out";
 
-  if (mode === "top") {
+  // top: text-only
+  if (t < 0.18) {
     return cx(
       base,
       "text-black/80 hover:text-black hover:bg-black/5",
@@ -31,6 +29,7 @@ function navItemClass(isActive: boolean, mode: "top" | "scrolled") {
     );
   }
 
+  // scrolled: pill active
   return cx(
     base,
     "text-black/80 hover:text-black hover:bg-black/5",
@@ -43,21 +42,27 @@ export default function Header() {
   const location = useLocation();
   const isHome = location.pathname === "/";
 
-  // 0 at top, 1 after 220px scroll
-  const p = useScrollProgress(220);
-  const t = clamp01(p);
+  // ✅ Smooth morph progress
+  // Make it react fast: 0..1 within first 120px
+  const t = useScrollProgress(120);
 
-  // ✅ You asked: top text should be BLACK
-  const mode: "top" | "scrolled" = t < 0.2 ? "top" : "scrolled";
+  // ✅ SPREAD ON SCROLL (tight -> wide)
+  const innerStyle = useMemo(() => {
+    const maxW = lerp(980, 1600, t); // spreads out as you scroll
+    const px = lerp(16, 40, t); // a bit more padding as it spreads
+    return {
+      maxWidth: `${maxW}px`,
+      paddingLeft: `${px}px`,
+      paddingRight: `${px}px`,
+      transition: "max-width 220ms ease, padding 220ms ease",
+    } as React.CSSProperties;
+  }, [t]);
 
-  /**
-   * Header morph:
-   * transparent -> white/blur, subtle border/shadow
-   */
+  // ✅ Header frosted background that ramps up immediately
   const headerStyle = useMemo(() => {
-    const bgAlpha = lerp(0.0, 0.78, t);
+    const bgAlpha = lerp(0.0, 0.82, t); // transparent -> white
     const borderAlpha = lerp(0.0, 0.12, t);
-    const shadowAlpha = lerp(0.0, 0.14, t);
+    const shadowAlpha = lerp(0.0, 0.16, t);
 
     return {
       backgroundColor: `rgba(255,255,255,${bgAlpha})`,
@@ -70,37 +75,16 @@ export default function Header() {
     } as React.CSSProperties;
   }, [t]);
 
-  /**
-   * ✅ Spread animation (HOME ONLY):
-   * - At top: constrained/centered
-   * - On scroll: expands to full width (ends of the screen)
-   */
-  const innerClass = useMemo(() => {
-    // top = centered + tighter width
-    // scrolled = full width
-    if (!isHome) return "container h-16 flex items-center justify-between";
-
-    return cx(
-      "mx-auto h-16 flex items-center justify-between transition-all duration-300 ease-out",
-      // This is the “spread”: max-w grows to full width
-      t < 0.2 ? "max-w-5xl" : "max-w-none w-full",
-    );
-  }, [isHome, t]);
-
-  // Padding grows slightly as it spreads
-  const innerStyle = useMemo(() => {
-    if (!isHome) return undefined;
-    const px = lerp(24, 48, t); // 24px -> 48px
-    return { paddingLeft: px, paddingRight: px } as React.CSSProperties;
-  }, [isHome, t]);
-
   return (
     <>
       <header
-        className={cx("fixed top-0 left-0 right-0 z-50 border-b")}
+        className="fixed top-0 left-0 right-0 z-50 border-b"
         style={headerStyle}
       >
-        <div className={innerClass} style={innerStyle}>
+        <div
+          className="h-16 mx-auto flex items-center justify-between"
+          style={innerStyle}
+        >
           {/* Brand */}
           <NavLink to="/" className="flex items-center gap-2">
             <div className="h-9 w-9 rounded-xl grid place-items-center border bg-black/5 border-black/10">
@@ -116,7 +100,7 @@ export default function Header() {
             <NavLink
               to="/"
               end
-              className={({ isActive }) => navItemClass(isActive, mode)}
+              className={({ isActive }) => navItemClass(isActive, t)}
             >
               Home
             </NavLink>
@@ -125,13 +109,13 @@ export default function Header() {
               <>
                 <NavLink
                   to="/login"
-                  className={({ isActive }) => navItemClass(isActive, mode)}
+                  className={({ isActive }) => navItemClass(isActive, t)}
                 >
                   Login
                 </NavLink>
                 <NavLink
                   to="/register"
-                  className={({ isActive }) => navItemClass(isActive, mode)}
+                  className={({ isActive }) => navItemClass(isActive, t)}
                 >
                   Register
                 </NavLink>
@@ -141,7 +125,7 @@ export default function Header() {
                 <NavLink
                   to="/jobs"
                   end
-                  className={({ isActive }) => navItemClass(isActive, mode)}
+                  className={({ isActive }) => navItemClass(isActive, t)}
                 >
                   Jobs
                 </NavLink>
@@ -149,7 +133,7 @@ export default function Header() {
                 {user.role === "client" && (
                   <NavLink
                     to="/jobs/create"
-                    className={({ isActive }) => navItemClass(isActive, mode)}
+                    className={({ isActive }) => navItemClass(isActive, t)}
                   >
                     Create Job
                   </NavLink>
@@ -157,7 +141,7 @@ export default function Header() {
 
                 <NavLink
                   to="/contracts"
-                  className={({ isActive }) => navItemClass(isActive, mode)}
+                  className={({ isActive }) => navItemClass(isActive, t)}
                 >
                   Contracts
                 </NavLink>
@@ -173,12 +157,12 @@ export default function Header() {
 
                 <NavLink
                   to="/profile"
-                  className={({ isActive }) => navItemClass(isActive, mode)}
+                  className={({ isActive }) => navItemClass(isActive, t)}
                 >
                   Profile
                 </NavLink>
 
-                {/* User chip */}
+                {/* user chip */}
                 <div className="hidden sm:flex items-center gap-2 ml-2 pl-2 border-l border-black/10">
                   <div className="h-9 w-9 rounded-xl bg-black/5 border border-black/10 grid place-items-center">
                     <span className="text-xs font-bold text-black">
@@ -191,7 +175,6 @@ export default function Header() {
                     </p>
                     <p className="text-xs text-black/60">{user.role}</p>
                   </div>
-
                   <button
                     type="button"
                     onClick={logout}
@@ -201,7 +184,7 @@ export default function Header() {
                   </button>
                 </div>
 
-                {/* Mobile logout */}
+                {/* mobile logout */}
                 <button
                   type="button"
                   onClick={logout}
@@ -215,7 +198,7 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Spacer so content starts below fixed header */}
+      {/* spacer */}
       <div className="h-16" />
     </>
   );
