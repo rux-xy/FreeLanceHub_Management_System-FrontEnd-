@@ -1,157 +1,113 @@
-import { useMemo, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-
-type NavState = {
-  intent?: "apply" | "proposal";
-  forceRole?: "freelancer";
-  from?: string;
-  jobId?: string;
-};
-
-export default function Register() {
-  const { register, isLoading, error, clearError } = useAuth();
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../state/auth';
+import { Button, Input, Select } from '../components/ui/FormControls';
+import { Card } from '../components/ui/Cards';
+import { UserRole } from '../types';
+export function Register() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState<UserRole>('client');
+  const { register, isLoading, error } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const navState = (location.state ?? {}) as NavState;
-
-  const forcedFreelancer = navState.forceRole === "freelancer";
-
-  const redirectTo = useMemo(() => {
-    return navState.from ?? "/profile";
-  }, [navState.from]);
-
-  // ✅ no useEffect needed (avoids the warning)
-  const [role, setRole] = useState<"client" | "freelancer">(
-    forcedFreelancer ? "freelancer" : "client"
-  );
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    clearError();
-
     try {
-      await register({
-        name,
-        email,
-        password,
-        role: forcedFreelancer ? "freelancer" : role,
-      });
+      await register(name, email, password, role);
+      navigate('/');
+    } catch (err) {
 
-      navigate(redirectTo);
-    } catch {
-      // handled in auth context
-    }
-  };
-
+      // Error handled by hook
+    }};
   return (
-    <div className="max-w-lg mx-auto px-4 py-10">
-      <div className="rounded-2xl border bg-white/90 p-6 shadow-sm">
-        <h1 className="text-3xl font-extrabold">Register</h1>
+    <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Subtle background glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-white/[0.02] rounded-full blur-[100px] -z-10 pointer-events-none"></div>
 
-        {forcedFreelancer ? (
-          <div className="mt-4 rounded-xl border bg-amber-50 px-4 py-3 text-amber-900">
-            <p className="font-semibold">Freelancer account required</p>
-            <p className="text-sm mt-1">
-              To apply or submit proposals, you must register as a{" "}
-              <b>freelancer</b>. Already have a freelancer account?{" "}
-              <Link to="/login" state={navState} className="underline font-semibold">
-                Login here
-              </Link>
-              .
-            </p>
-          </div>
-        ) : null}
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-block group">
+            <img
+              src="/Untitled_design_(1).png"
+              alt="UniFreelancer"
+              className="h-12 w-auto mx-auto mb-6 group-hover:scale-105 transition-transform" />
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
-            <input
+          </Link>
+          <h2 className="text-3xl font-bold text-white tracking-tight">
+            Create Account
+          </h2>
+          <p className="text-[#888888] mt-2">
+            Join the UniFreelancer community
+          </p>
+        </div>
+
+        <Card className="bg-[#0a0a0a] border-[#222222] shadow-2xl">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {error &&
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
+                {error}
+              </div>
+            }
+
+            <Input
+              label="Full Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-black/10"
-              required
-            />
-          </div>
+              placeholder="John Doe"
+              required />
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
+
+            <Input
+              label="Email Address"
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-black/10"
-              required
-            />
-          </div>
+              placeholder="student@university.lk"
+              required />
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <input
+
+            <Input
+              label="Password"
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-black/10"
-              required
-            />
-          </div>
+              placeholder="••••••••"
+              required />
 
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Role</label>
 
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                checked={role === "freelancer"}
-                onChange={() => setRole("freelancer")}
-              />
-              <span>Freelancer</span>
-            </label>
+            <Select
+              label="I want to..."
+              value={role}
+              onChange={(e) => setRole(e.target.value as UserRole)}
+              options={[
+              {
+                value: 'client',
+                label: 'Hire Talent (Client)'
+              },
+              {
+                value: 'freelancer',
+                label: 'Offer Services (Freelancer)'
+              }]
+              } />
 
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                checked={role === "client"}
-                onChange={() => setRole("client")}
-                disabled={forcedFreelancer}
-              />
-              <span className={forcedFreelancer ? "text-zinc-400" : ""}>Client</span>
-            </label>
 
-            {forcedFreelancer ? (
-              <p className="text-xs text-zinc-500">
-                Client role is disabled because you came from Apply/Proposal.
-              </p>
-            ) : null}
-          </div>
+            <Button type="submit" className="w-full" isLoading={isLoading}>
+              Create Account
+            </Button>
+          </form>
 
-          {error ? (
-            <div className="rounded-lg bg-rose-50 px-4 py-3 text-rose-700">
-              {error}
-            </div>
-          ) : null}
+          <div className="mt-6 text-center text-sm text-[#666666]">
+            Already have an account?{' '}
+            <Link
+              to="/login"
+              className="text-white hover:underline font-medium">
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full px-5 py-2.5 rounded-lg bg-black text-white hover:opacity-90 disabled:opacity-60"
-          >
-            {isLoading ? "Creating account..." : "Register"}
-          </button>
-
-          <p className="text-sm text-zinc-600 text-center">
-            Already have an account?{" "}
-            <Link to="/login" state={navState} className="underline font-semibold">
-              Login
+              Sign In
             </Link>
-          </p>
-        </form>
+          </div>
+        </Card>
       </div>
-    </div>
-  );
+    </div>);
+
 }

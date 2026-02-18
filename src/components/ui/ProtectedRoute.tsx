@@ -1,27 +1,39 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import type { UserRole } from '../../types/user.types';
-
-type ProtectedRouteProps = {
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../state/auth';
+import { UserRole } from '../../types';
+import { Loader2 } from 'lucide-react';
+interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredRole?: UserRole;
-};
-
-export default function ProtectedRoute({
+}
+export function ProtectedRoute({
   children,
-  requiredRole,
+  requiredRole
 }: ProtectedRouteProps) {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+  const location = useLocation();
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <Loader2 className="w-8 h-8 text-white animate-spin" />
+      </div>);
 
-  // Not logged in
-  if (!user) {
-    return <Navigate to="/login" replace />;
   }
+  if (!user) {
+    return (
+      <Navigate
+        to="/login"
+        state={{
+          from: location
+        }}
+        replace />);
 
-  // Role restriction if specified
-  if (requiredRole && user.role !== requiredRole) {
+
+  }
+  if (requiredRole && user.role !== requiredRole && user.role !== 'admin') {
+    // Admin can access everything generally, or redirect to home if strict
     return <Navigate to="/" replace />;
   }
-
   return <>{children}</>;
 }
