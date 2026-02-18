@@ -1,26 +1,25 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../state/auth';
-import { Button, Input } from '../components/ui/FormControls';
+import { Button, Input, Select } from '../components/ui/FormControls';
 import { Card } from '../components/ui/Cards';
-export function Login() {
+import { UserRole } from '../types';
+export function Register() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<UserRole>('client');
   const {
-    login,
+    register,
     isLoading,
     error
   } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = (location.state as any)?.from?.pathname || '/';
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(email, password);
-      navigate(from, {
-        replace: true
-      });
+      await register(name, email, password, role);
+      navigate('/');
     } catch (err) {
 
       // Error handled by hook
@@ -35,37 +34,43 @@ export function Login() {
             <img src="/Untitled_design_(1).png" alt="UniFreelancer" className="h-12 w-auto mx-auto mb-6 group-hover:scale-105 transition-transform" />
           </Link>
           <h2 className="text-3xl font-bold text-white tracking-tight">
-            Welcome back
+            Create Account
           </h2>
           <p className="text-[#888888] mt-2">
-            Login to your UniFreelancer account
+            Join the UniFreelancer community
           </p>
         </div>
 
         <Card className="bg-[#0a0a0a] border-[#222222] shadow-2xl">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {error && <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
                 {error}
               </div>}
+
+            <Input label="Full Name" value={name} onChange={(e) => setName(e.target.value)} placeholder="John Doe" required />
 
             <Input label="Email Address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="student@university.lk" required />
 
             <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
 
+            <Select label="I want to..." value={role} onChange={(e) => setRole(e.target.value as UserRole)} options={[{
+            value: 'client',
+            label: 'Hire Talent (Client)'
+          }, {
+            value: 'freelancer',
+            label: 'Offer Services (Freelancer)'
+          }]} />
+
             <Button type="submit" className="w-full" isLoading={isLoading}>
-              Sign In
+              Create Account
             </Button>
           </form>
 
           <div className="mt-6 text-center text-sm text-[#666666]">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-white hover:underline font-medium">
-              Create one
+            Already have an account?{' '}
+            <Link to="/login" className="text-white hover:underline font-medium">
+              Sign In
             </Link>
-          </div>
-
-          <div className="mt-8 pt-6 border-t border-[#222222] text-center text-xs text-[#444444]">
-            <p>Demo Admin: admin@freelancehub.com / Admin@123</p>
           </div>
         </Card>
       </div>
