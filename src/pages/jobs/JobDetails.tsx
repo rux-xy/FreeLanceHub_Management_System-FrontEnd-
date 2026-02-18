@@ -43,10 +43,18 @@ export function JobDetails() {
     fetchProposalsByJob,
     acceptProposal,
     rejectProposal,
+    deleteProposal,
     isLoading: proposalsLoading,
   } = useProposals();
-  const { savedJobs, saveJob, unsaveJob, appliedJobs, applyToJob, isApplied } =
-    useAppliedSaved();
+  const {
+    savedJobs,
+    saveJob,
+    unsaveJob,
+    appliedJobs,
+    applyToJob,
+    removeApplied,
+    isApplied,
+  } = useAppliedSaved();
   const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
   const [isEditingProposal, setIsEditingProposal] = useState(false);
   useEffect(() => {
@@ -77,6 +85,8 @@ export function JobDetails() {
   const canDeleteJob = isOwner && currentJob.status === "open";
   // Freelancer can edit proposal only if it's pending
   const canEditProposal = myProposal && myProposal.status === "pending";
+  // Freelancer can delete/withdraw proposal only if it's pending
+  const canDeleteProposal = myProposal && myProposal.status === "pending";
   const handleSaveToggle = () => {
     if (isSaved) {
       unsaveJob(currentJob.id);
@@ -102,6 +112,23 @@ export function JobDetails() {
     try {
       await deleteJob(currentJob.id);
       navigate("/jobs/my");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleWithdrawProposal = async () => {
+    if (!myProposal) return;
+    if (
+      !confirm(
+        "Are you sure you want to withdraw your proposal? This action cannot be undone.",
+      )
+    )
+      return;
+    try {
+      await deleteProposal(myProposal.id);
+      removeApplied(currentJob.id);
+      // Re-fetch proposals to update the list
+      if (id) fetchProposalsByJob(id);
     } catch (error) {
       console.error(error);
     }
@@ -210,15 +237,26 @@ export function JobDetails() {
                     <h3 className="text-white font-semibold">Your Proposal</h3>
                     <StatusBadge status={myProposal.status} />
                   </div>
-                  {canEditProposal && (
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={handleEditProposal}
-                    >
-                      <Pencil className="w-3 h-3 mr-1" /> Edit Proposal
-                    </Button>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {canEditProposal && (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={handleEditProposal}
+                      >
+                        <Pencil className="w-3 h-3 mr-1" /> Edit
+                      </Button>
+                    )}
+                    {canDeleteProposal && (
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={handleWithdrawProposal}
+                      >
+                        <Trash2 className="w-3 h-3 mr-1" /> Withdraw
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div className="bg-[#111827]/50 p-3 rounded-lg border border-gray-800">
@@ -291,13 +329,22 @@ export function JobDetails() {
               {isFreelancer &&
                 hasExistingProposal &&
                 myProposal?.status === "pending" && (
-                  <Button
-                    className="w-full"
-                    variant="secondary"
-                    onClick={handleEditProposal}
-                  >
-                    <Pencil className="w-4 h-4 mr-2" /> Edit Proposal
-                  </Button>
+                  <div className="space-y-2">
+                    <Button
+                      className="w-full"
+                      variant="secondary"
+                      onClick={handleEditProposal}
+                    >
+                      <Pencil className="w-4 h-4 mr-2" /> Edit Proposal
+                    </Button>
+                    <Button
+                      className="w-full"
+                      variant="danger"
+                      onClick={handleWithdrawProposal}
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" /> Withdraw Proposal
+                    </Button>
+                  </div>
                 )}
 
               {isFreelancer &&
