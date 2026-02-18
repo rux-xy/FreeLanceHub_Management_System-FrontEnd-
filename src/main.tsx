@@ -1,36 +1,10 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import './index.css';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import App from './App';
-import { AuthProvider } from './context/AuthProvider';
-import { JobsProvider } from './context/JobsContext';
-import { AppliedJobsProvider } from "./context/AppliedJobsContext";
-import { ProposalsProvider } from "./context/ProposalsContext";
-import { ContractsProvider } from "./context/ContractsContext";
-
-
-
-const el = document.getElementById('root');
-
-if (!el) {
-  throw new Error("Root element '#root' not found. Check index.html.");
-}
-
-createRoot(el).render(
-  <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-      <JobsProvider>
-      <AppliedJobsProvider>
-        <ProposalsProvider>
-        <ContractsProvider>
-          <App />
-        </ContractsProvider>
-        </ProposalsProvider>
-      </AppliedJobsProvider>
-     </JobsProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  </StrictMode>
-);
+import './index.css';
+import { seedMockData } from './mocks/seed';
+// Initialize mock data
+seedMockData();
+ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode>
+    <App />
+  </React.StrictMode>);

@@ -1,29 +1,25 @@
-import { Outlet, useLocation } from "react-router-dom";
-import Header from "./Header";
-
-export default function Layout() {
-  const location = useLocation();
-  const isHome = location.pathname === "/";
-
-  return (
-    <div className="min-h-screen relative text-zinc-900">
-      {/* background glow */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(1200px_650px_at_15%_-10%,rgba(99,102,241,0.18),transparent_60%),radial-gradient(1000px_600px_at_90%_0%,rgba(16,185,129,0.14),transparent_55%)]" />
-
+import React from 'react';
+import { Header } from './Header';
+interface LayoutProps {
+  children: React.ReactNode;
+}
+export function Layout({
+  children
+}: LayoutProps) {
+  return <div className="min-h-screen bg-black flex flex-col text-white selection:bg-[#f97316] selection:text-white">
       <Header />
-
-      {/* ✅ IMPORTANT:
-          - Home: no container (full width)
-          - Others: container */}
-      {isHome ? (
-        <main className="relative">
-          <Outlet />
-        </main>
-      ) : (
-        <main className="container py-8 relative">
-          <Outlet />
-        </main>
-      )}
-    </div>
-  );
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {children}
+      </main>
+      <footer className="border-t border-[#222222] bg-black py-8 mt-auto">
+        <div className="container mx-auto px-4 text-center text-[#444444] text-sm">
+          <p className="font-medium">
+            &copy; {new Date().getFullYear()} UniFreelancer.
+          </p>
+          <p className="mt-2">
+            Connecting Sri Lankan university talent with opportunities.
+          </p>
+        </div>
+      </footer>
+    </div>;
 }

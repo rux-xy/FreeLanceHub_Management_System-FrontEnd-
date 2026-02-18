@@ -1,212 +1,182 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
-import { useMemo } from "react";
-import { useScrollProgress } from "../../hooks/useScrollProgress";
-
-function lerp(a: number, b: number, t: number) {
-  return a + (b - a) * t;
-}
-
-function cx(...parts: Array<string | false | undefined | null>) {
-  return parts.filter(Boolean).join(" ");
-}
-
-/**
- * Apple-ish nav:
- * - at top: plain black text
- * - as you scroll: frosted white bar + pills
- */
-function navItemClass(isActive: boolean, t: number) {
-  const base =
-    "inline-flex items-center rounded-full px-3 py-2 text-sm font-medium select-none " +
-    "transition-all duration-200 ease-out";
-
-  // top: text-only
-  if (t < 0.18) {
-    return cx(
-      base,
-      "text-black/80 hover:text-black hover:bg-black/5",
-      isActive && "text-black bg-black/10",
-    );
-  }
-
-  // scrolled: pill active
-  return cx(
-    base,
-    "text-black/80 hover:text-black hover:bg-black/5",
-    isActive && "bg-black text-white shadow-sm",
-  );
-}
-
-export default function Header() {
-  const { user, logout } = useAuth();
+import React, { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../state/auth';
+import { useNotifications } from '../../state/notifications';
+import { useChat } from '../../state/chat';
+import { Bell, MessageSquare, Menu, X, LogOut, User, Briefcase, FileText, LayoutDashboard, Search } from 'lucide-react';
+import { Button } from './FormControls';
+export function Header() {
+  const {
+    user,
+    logout
+  } = useAuth();
+  const {
+    unreadCount: notifCount
+  } = useNotifications();
+  const {
+    totalUnreadCount: chatCount
+  } = useChat();
+  const navigate = useNavigate();
   const location = useLocation();
-  const isHome = location.pathname === "/";
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+  const isActive = (path: string) => location.pathname === path;
+  const NavLink = ({
+    to,
+    children,
+    icon: Icon
 
-  // Smooth morph progress: 0..1 within first 120px
-  const tRaw = useScrollProgress(120);
-  const t = Math.min(1, Math.max(0, tRaw));
 
-  // Spread ON SCROLL (tight -> wide)
-  const innerStyle = useMemo(() => {
-    // spreads out as you scroll
-    const maxW = isHome ? lerp(980, 1600, t) : 1200;
-    const px = isHome ? lerp(16, 40, t) : 24;
 
-    return {
-      maxWidth: `${maxW}px`,
-      paddingLeft: `${px}px`,
-      paddingRight: `${px}px`,
-      transition: "max-width 240ms ease, padding 240ms ease",
-    } as React.CSSProperties;
-  }, [isHome, t]);
 
-  // Frosted header background ramps up
-  const headerStyle = useMemo(() => {
-    const bgAlpha = lerp(0.0, 0.82, t);
-    const borderAlpha = lerp(0.0, 0.12, t);
-    const shadowAlpha = lerp(0.0, 0.16, t);
+  }: {to: string;children: React.ReactNode;icon?: any;}) => <Link to={to} className={`
+        flex items-center space-x-2 text-sm font-medium transition-all duration-200
+        ${isActive(to) ? 'text-[#f97316]' : 'text-[#888888] hover:text-white'}
+      `} onClick={() => setIsMobileMenuOpen(false)}>
+      {Icon && <Icon className={`w-4 h-4 ${isActive(to) ? 'text-[#f97316]' : 'text-[#666666] group-hover:text-white'}`} />}
+      <span>{children}</span>
+    </Link>;
+  return <header className="sticky top-0 z-40 w-full border-b border-[#222222] bg-black/50 backdrop-blur-xl supports-[backdrop-filter]:bg-black/20">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/" className="flex items-center space-x-2 group">
+          <img src="/Untitled_design_(1).png" alt="UniFreelancer" className="h-8 w-auto group-hover:scale-105 transition-transform" />
+        </Link>
 
-    return {
-      backgroundColor: `rgba(255,255,255,${bgAlpha})`,
-      borderColor: `rgba(0,0,0,${borderAlpha})`,
-      boxShadow: `0 10px 30px rgba(0,0,0,${shadowAlpha})`,
-      backdropFilter: t > 0.02 ? "blur(16px)" : "none",
-      WebkitBackdropFilter: t > 0.02 ? "blur(16px)" : "none",
-      transition:
-        "background-color 200ms ease, box-shadow 200ms ease, border-color 200ms ease",
-    } as React.CSSProperties;
-  }, [t]);
-
-  return (
-    <>
-      <header
-        className="fixed top-0 left-0 right-0 z-50 border-b"
-        style={headerStyle}
-      >
-        <div
-          className="h-16 mx-auto flex items-center justify-between"
-          style={innerStyle}
-        >
-          {/* Brand */}
-          <NavLink to="/" className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-xl grid place-items-center border bg-black/5 border-black/10">
-              <span className="text-sm font-extrabold text-black">FH</span>
-            </div>
-            <span className="text-lg font-semibold tracking-tight text-black">
-              FreelanceHub
-            </span>
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-8">
+          <NavLink to="/" icon={LayoutDashboard}>
+            Home
           </NavLink>
 
-          {/* Nav */}
-          <nav className="flex items-center gap-1">
-            <NavLink
-              to="/"
-              end
-              className={({ isActive }) => navItemClass(isActive, t)}
-            >
-              Home
-            </NavLink>
-
-            {!user ? (
-              <>
-                <NavLink
-                  to="/login"
-                  className={({ isActive }) => navItemClass(isActive, t)}
-                >
-                  Login
-                </NavLink>
-                <NavLink
-                  to="/register"
-                  className={({ isActive }) => navItemClass(isActive, t)}
-                >
-                  Register
-                </NavLink>
-              </>
-            ) : (
-              <>
-                <NavLink
-                  to="/jobs"
-                  end
-                  className={({ isActive }) => navItemClass(isActive, t)}
-                >
-                  Jobs
-                </NavLink>
-
-                {user.role === "client" && (
-                  <NavLink
-                    to="/jobs/create"
-                    className={({ isActive }) => navItemClass(isActive, t)}
-                  >
-                    Create Job
+          {user ? <>
+              {user.role === 'client' && <>
+                  <NavLink to="/jobs" icon={Search}>
+                    Find Talent
                   </NavLink>
-                )}
+                  <NavLink to="/jobs/my" icon={Briefcase}>
+                    My Requests
+                  </NavLink>
+                  <NavLink to="/contracts" icon={FileText}>
+                    Contracts
+                  </NavLink>
+                </>}
 
-                <NavLink
-                  to="/contracts"
-                  className={({ isActive }) => navItemClass(isActive, t)}
-                >
-                  Contracts
-                </NavLink>
+              {user.role === 'freelancer' && <>
+                  <NavLink to="/jobs" icon={Search}>
+                    Find Work
+                  </NavLink>
+                  <NavLink to="/jobs/applied" icon={Briefcase}>
+                    Applied
+                  </NavLink>
+                  <NavLink to="/contracts" icon={FileText}>
+                    Contracts
+                  </NavLink>
+                </>}
 
-                <NavLink
-                  to="/profile"
-                  className={({ isActive }) => navItemClass(isActive, t)}
-                >
-                  Profile
-                </NavLink>
+              {user.role === 'admin' && <>
+                  <NavLink to="/admin" icon={LayoutDashboard}>
+                    Dashboard
+                  </NavLink>
+                  <NavLink to="/admin/users" icon={User}>
+                    Users
+                  </NavLink>
+                  <NavLink to="/admin/jobs" icon={Briefcase}>
+                    Jobs
+                  </NavLink>
+                </>}
+            </> : <NavLink to="/jobs" icon={Search}>
+              Browse Requests
+            </NavLink>}
+        </nav>
 
-                {user.role === "admin" && (
-                  <Link
-                    to="/admin"
-                    className={cx(
-                      "ml-1 rounded-full px-3 py-2 text-sm font-medium",
-                      "text-black/80 hover:text-black hover:bg-black/5 transition",
-                    )}
-                  >
-                    Admin
-                  </Link>
-                )}
+        {/* Right Side Actions */}
+        <div className="flex items-center space-x-4">
+          {user ? <>
+              <Link to="/chat" className="relative text-[#888888] hover:text-white transition-colors">
+                <MessageSquare className="w-5 h-5" />
+                {chatCount > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#f97316] text-white text-[10px] font-bold flex items-center justify-center rounded-full shadow-sm">
+                    {chatCount}
+                  </span>}
+              </Link>
 
-                {/* User chip */}
-                <div className="hidden sm:flex items-center gap-2 ml-2 pl-2 border-l border-black/10">
-                  <div className="h-9 w-9 rounded-xl bg-black/5 border border-black/10 grid place-items-center">
-                    <span className="text-xs font-bold text-black">
-                      {user.name?.slice(0, 1).toUpperCase()}
-                    </span>
+              <Link to="/notifications" className="relative text-[#888888] hover:text-white transition-colors">
+                <Bell className="w-5 h-5" />
+                {notifCount > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#f97316] text-white text-[10px] font-bold flex items-center justify-center rounded-full shadow-sm">
+                    {notifCount}
+                  </span>}
+              </Link>
+
+              <div className="hidden md:flex items-center space-x-4 ml-4 border-l border-[#222222] pl-4">
+                <Link to="/profile" className="flex items-center space-x-2 text-sm font-medium text-[#888888] hover:text-white transition-colors">
+                  <div className="w-8 h-8 bg-[#111111] rounded-full flex items-center justify-center border border-[#333333]">
+                    <User className="w-4 h-4 text-[#888888]" />
                   </div>
-                  <div className="leading-tight">
-                    <p className="text-sm font-semibold text-black">
-                      {user.name}
-                    </p>
-                    <p className="text-xs text-black/60">{user.role}</p>
-                  </div>
+                  <span className="max-w-[100px] truncate">{user.name}</span>
+                </Link>
+                <button onClick={handleLogout} className="text-[#888888] hover:text-red-500 transition-colors">
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </div>
+            </> : <div className="hidden md:flex items-center space-x-4">
+              <Link to="/login" className="text-sm font-medium text-[#888888] hover:text-white transition-colors">
+                Login
+              </Link>
+              <Link to="/register">
+                <Button size="sm" variant="primary">
+                  Get Started
+                </Button>
+              </Link>
+            </div>}
 
-                  <button
-                    type="button"
-                    onClick={logout}
-                    className="ml-2 rounded-full px-3 py-2 text-sm font-medium bg-black text-white hover:opacity-90 transition"
-                  >
-                    Logout
+          {/* Mobile Menu Button */}
+          <button className="md:hidden text-[#888888] hover:text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && <div className="md:hidden border-t border-[#222222] bg-black">
+          <div className="px-4 py-6 space-y-4">
+            <NavLink to="/">Home</NavLink>
+            {user ? <>
+                {user.role === 'client' && <>
+                    <NavLink to="/jobs">Find Talent</NavLink>
+                    <NavLink to="/jobs/create">Create Request</NavLink>
+                    <NavLink to="/jobs/my">My Requests</NavLink>
+                    <NavLink to="/contracts">Contracts</NavLink>
+                  </>}
+                {user.role === 'freelancer' && <>
+                    <NavLink to="/jobs">Find Work</NavLink>
+                    <NavLink to="/jobs/applied">Applied Jobs</NavLink>
+                    <NavLink to="/jobs/saved">Saved Jobs</NavLink>
+                    <NavLink to="/contracts">Contracts</NavLink>
+                  </>}
+                {user.role === 'admin' && <>
+                    <NavLink to="/admin">Dashboard</NavLink>
+                    <NavLink to="/admin/users">Users</NavLink>
+                    <NavLink to="/admin/jobs">Jobs</NavLink>
+                  </>}
+                <div className="pt-4 border-t border-[#222222]">
+                  <NavLink to="/profile">Profile</NavLink>
+                  <button onClick={handleLogout} className="flex items-center space-x-2 text-sm font-medium text-red-400 mt-4 w-full">
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
                   </button>
                 </div>
-
-                {/* Mobile logout */}
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="sm:hidden rounded-full px-3 py-2 text-sm font-medium bg-black text-white hover:opacity-90 transition"
-                >
-                  Logout
-                </button>
-              </>
-            )}
-          </nav>
-        </div>
-      </header>
-
-      {/* Spacer so page content starts below fixed header */}
-      <div className="h-16" />
-    </>
-  );
+              </> : <div className="pt-4 border-t border-[#222222] space-y-4">
+                <Link to="/login" className="block text-sm font-medium text-[#888888]">
+                  Login
+                </Link>
+                <Link to="/register" className="block">
+                  <Button className="w-full">Get Started</Button>
+                </Link>
+              </div>}
+          </div>
+        </div>}
+    </header>;
 }
