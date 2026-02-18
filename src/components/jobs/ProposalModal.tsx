@@ -1,40 +1,64 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "../ui/Modal";
 import { Button, Input, Textarea } from "../ui/FormControls";
 import { useProposals } from "../../state/proposals";
 import { useAppliedSaved } from "../../state/appliedSaved";
+import { Proposal } from "../../types";
 interface ProposalModalProps {
   isOpen: boolean;
   onClose: () => void;
   jobId: string;
   jobTitle: string;
+  existingProposal?: Proposal | null;
 }
 export function ProposalModal({
   isOpen,
   onClose,
   jobId,
   jobTitle,
+  existingProposal,
 }: ProposalModalProps) {
-  const { createProposal, isLoading } = useProposals();
+  const { createProposal, updateProposal, isLoading } = useProposals();
   const { applyToJob } = useAppliedSaved();
   const [coverLetter, setCoverLetter] = useState("");
   const [bidAmount, setBidAmount] = useState("");
   const [estimatedDays, setEstimatedDays] = useState("");
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await createProposal({
-        jobId,
-        coverLetter,
-        bidAmount: Number(bidAmount),
-        estimatedDays: Number(estimatedDays),
-      });
-      applyToJob(jobId);
-      onClose();
-      // Reset form
+  const isEditMode = !!existingProposal;
+  useEffect(() => {
+    if (existingProposal) {
+      setCoverLetter(existingProposal.coverLetter);
+      setBidAmount(String(existingProposal.bidAmount));
+      setEstimatedDays(String(existingProposal.estimatedDays));
+    } else {
       setCoverLetter("");
       setBidAmount("");
       setEstimatedDays("");
+    }
+  }, [existingProposal, isOpen]);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (isEditMode && existingProposal) {
+        await updateProposal(existingProposal.id, {
+          coverLetter,
+          bidAmount: Number(bidAmount),
+          estimatedDays: Number(estimatedDays),
+        });
+      } else {
+        await createProposal({
+          jobId,
+          coverLetter,
+          bidAmount: Number(bidAmount),
+          estimatedDays: Number(estimatedDays),
+        });
+        applyToJob(jobId);
+      }
+      onClose();
+      if (!isEditMode) {
+        setCoverLetter("");
+        setBidAmount("");
+        setEstimatedDays("");
+      }
     } catch (error) {
       console.error(error);
     }
@@ -43,7 +67,11 @@ export function ProposalModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={`Submit Proposal: ${jobTitle}`}
+      title={
+        isEditMode
+          ? `Edit Proposal: ${jobTitle}`
+          : `Submit Proposal: ${jobTitle}`
+      }
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
@@ -79,7 +107,7 @@ export function ProposalModal({
             Cancel
           </Button>
           <Button type="submit" isLoading={isLoading}>
-            Submit Proposal
+            {isEditMode ? "Update Proposal" : "Submit Proposal"}
           </Button>
         </div>
       </form>
