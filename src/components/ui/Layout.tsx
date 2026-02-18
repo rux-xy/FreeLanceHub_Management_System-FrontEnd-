@@ -3,9 +3,10 @@ import { Header } from './Header';
 interface LayoutProps {
   children: React.ReactNode;
 }
-export function Layout({ children }: LayoutProps) {
-  return (
-    <div className="min-h-screen bg-black flex flex-col text-white selection:bg-[#f97316] selection:text-white">
+export function Layout({
+  children
+}: LayoutProps) {
+  return <div className="min-h-screen bg-black flex flex-col text-white selection:bg-[#f97316] selection:text-white">
       <Header />
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {children}
@@ -20,6 +21,5 @@ export function Layout({ children }: LayoutProps) {
           </p>
         </div>
       </footer>
-    </div>);
-
+    </div>;
 }

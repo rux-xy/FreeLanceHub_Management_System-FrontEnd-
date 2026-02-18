@@ -28,8 +28,7 @@ export function PaymentModal({
     setIsLoading(false);
     onClose();
   };
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Secure Payment">
+  return <Modal isOpen={isOpen} onClose={onClose} title="Secure Payment">
       <div className="mb-6 text-center">
         <p className="text-gray-400 text-sm">Total Amount</p>
         <p className="text-3xl font-bold text-teal-400">
@@ -38,30 +37,11 @@ export function PaymentModal({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          label="Card Number"
-          placeholder="0000 0000 0000 0000"
-          value={cardNumber}
-          onChange={(e) => setCardNumber(e.target.value)}
-          required />
-
+        <Input label="Card Number" placeholder="0000 0000 0000 0000" value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} required />
 
         <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Expiry Date"
-            placeholder="MM/YY"
-            value={expiry}
-            onChange={(e) => setExpiry(e.target.value)}
-            required />
-
-          <Input
-            label="CVC"
-            placeholder="123"
-            value={cvc}
-            onChange={(e) => setCvc(e.target.value)}
-            required
-            type="password" />
-
+          <Input label="Expiry Date" placeholder="MM/YY" value={expiry} onChange={(e) => setExpiry(e.target.value)} required />
+          <Input label="CVC" placeholder="123" value={cvc} onChange={(e) => setCvc(e.target.value)} required type="password" />
         </div>
 
         <div className="flex items-center justify-center text-xs text-gray-500 gap-1 my-4">
@@ -75,6 +55,5 @@ export function PaymentModal({
           Pay LKR {amount.toLocaleString()}
         </Button>
       </form>
-    </Modal>);
-
+    </Modal>;
 }

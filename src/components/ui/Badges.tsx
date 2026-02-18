@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  JobStatus,
-  ProposalStatus,
-  ContractStatus,
-  PaymentStatus,
-  UserRole,
-  ServiceCategory } from
-'../../types';
+import { JobStatus, ProposalStatus, ContractStatus, PaymentStatus, UserRole, ServiceCategory } from '../../types';
 // Helper for consistent badge styling
 const BadgeBase = ({
   children,
@@ -14,13 +7,9 @@ const BadgeBase = ({
 
 
 
-}: {children: React.ReactNode;className?: string;}) =>
-<span
-  className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-medium border ${className}`}>
-
+}: {children: React.ReactNode;className?: string;}) => <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-medium border ${className}`}>
     {children}
   </span>;
-
 export function StatusBadge({
   status
 
@@ -52,13 +41,15 @@ export function StatusBadge({
     cancelled: 'Cancelled'
   };
   const key = status as string;
-  return (
-    <BadgeBase className={styles[key] || styles.open}>
+  return <BadgeBase className={styles[key] || styles.open}>
       {labels[key] || status}
-    </BadgeBase>);
-
+    </BadgeBase>;
 }
-export function RoleBadge({ role }: {role: UserRole;}) {
+export function RoleBadge({
+  role
+
+
+}: {role: UserRole;}) {
   const styles = {
     client: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
     freelancer: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
@@ -66,7 +57,11 @@ export function RoleBadge({ role }: {role: UserRole;}) {
   };
   return <BadgeBase className={styles[role]}>{role}</BadgeBase>;
 }
-export function PaymentBadge({ status }: {status?: PaymentStatus;}) {
+export function PaymentBadge({
+  status
+
+
+}: {status?: PaymentStatus;}) {
   if (!status) return <span className="text-[#666666] text-xs">No Payment</span>;
   const styles: Record<string, string> = {
     unpaid: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
@@ -75,14 +70,14 @@ export function PaymentBadge({ status }: {status?: PaymentStatus;}) {
     failed: 'bg-red-500/10 text-red-400 border-red-500/20',
     refunded: 'bg-white/5 text-[#666666] border-white/10'
   };
-  return (
-    <BadgeBase className={styles[status] || styles.unpaid}>{status}</BadgeBase>);
-
+  return <BadgeBase className={styles[status] || styles.unpaid}>{status}</BadgeBase>;
 }
-export function CategoryBadge({ category }: {category: ServiceCategory;}) {
-  return (
-    <BadgeBase className="bg-white/5 text-[#888888] border-white/10">
-      {category}
-    </BadgeBase>);
+export function CategoryBadge({
+  category
 
+
+}: {category: ServiceCategory;}) {
+  return <BadgeBase className="bg-white/5 text-[#888888] border-white/10">
+      {category}
+    </BadgeBase>;
 }

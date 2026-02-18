@@ -14,7 +14,10 @@ export function ProposalModal({
   jobId,
   jobTitle
 }: ProposalModalProps) {
-  const { createProposal, isLoading } = useProposals();
+  const {
+    createProposal,
+    isLoading
+  } = useProposals();
   const [coverLetter, setCoverLetter] = useState('');
   const [bidAmount, setBidAmount] = useState('');
   const [estimatedDays, setEstimatedDays] = useState('');
@@ -36,40 +39,14 @@ export function ProposalModal({
       console.error(error);
     }
   };
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={`Submit Proposal: ${jobTitle}`}>
-
+  return <Modal isOpen={isOpen} onClose={onClose} title={`Submit Proposal: ${jobTitle}`}>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Bid Amount (LKR)"
-            type="number"
-            required
-            min="0"
-            value={bidAmount}
-            onChange={(e) => setBidAmount(e.target.value)} />
-
-          <Input
-            label="Estimated Days"
-            type="number"
-            required
-            min="1"
-            value={estimatedDays}
-            onChange={(e) => setEstimatedDays(e.target.value)} />
-
+          <Input label="Bid Amount (LKR)" type="number" required min="0" value={bidAmount} onChange={(e) => setBidAmount(e.target.value)} />
+          <Input label="Estimated Days" type="number" required min="1" value={estimatedDays} onChange={(e) => setEstimatedDays(e.target.value)} />
         </div>
 
-        <Textarea
-          label="Cover Letter"
-          placeholder="Explain why you are the best fit for this job..."
-          required
-          rows={5}
-          value={coverLetter}
-          onChange={(e) => setCoverLetter(e.target.value)} />
-
+        <Textarea label="Cover Letter" placeholder="Explain why you are the best fit for this job..." required rows={5} value={coverLetter} onChange={(e) => setCoverLetter(e.target.value)} />
 
         <div className="flex justify-end space-x-3">
           <Button type="button" variant="secondary" onClick={onClose}>
@@ -80,6 +57,5 @@ export function ProposalModal({
           </Button>
         </div>
       </form>
-    </Modal>);
-
+    </Modal>;
 }

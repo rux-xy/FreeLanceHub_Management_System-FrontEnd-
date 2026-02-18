@@ -7,10 +7,11 @@ import { formatDistanceToNow } from 'date-fns';
 import { Check, X, Star, ShieldCheck, Award } from 'lucide-react';
 import { usersService } from '../../services/users.service';
 import { RatingStars } from '../ui/RatingStars';
+import { Link } from 'react-router-dom';
 interface ProposalListProps {
   proposals: Proposal[];
-  onAccept: (proposalId: string) => void;
-  onReject: (proposalId: string) => void;
+  onAccept?: (proposalId: string) => void;
+  onReject?: (proposalId: string) => void;
   isOwner: boolean;
 }
 // Helper component to fetch and display freelancer stats
@@ -83,9 +84,12 @@ export function ProposalList({
           <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-1">
-                <span className="font-bold text-lg text-white tracking-tight">
+                <Link
+                to={`/profile/${proposal.freelancerId}`}
+                className="font-bold text-lg text-white tracking-tight hover:text-teal-400 transition-colors">
+
                   {proposal.freelancerName}
-                </span>
+                </Link>
                 <StatusBadge status={proposal.status} />
               </div>
 
@@ -119,7 +123,7 @@ export function ProposalList({
             </p>
           </div>
 
-          {isOwner && proposal.status === 'pending' &&
+          {isOwner && proposal.status === 'pending' && onAccept && onReject &&
         <div className="flex justify-end space-x-3 border-t border-gray-700/50 pt-4 mt-4">
               <Button
             variant="danger"

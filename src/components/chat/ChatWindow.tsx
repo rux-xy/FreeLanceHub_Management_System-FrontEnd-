@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Message, ChatThread, SafeUser } from '../../types';
 import { Button, Input } from '../ui/FormControls';
-import { Send, User } from 'lucide-react';
+import { Send, User, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { usersService } from '../../services/users.service';
+import { contractsService } from '../../services/contracts.service';
 interface ChatWindowProps {
   thread: ChatThread;
   messages: Message[];
@@ -18,6 +19,8 @@ export function ChatWindow({
 }: ChatWindowProps) {
   const [newMessage, setNewMessage] = useState('');
   const [otherUser, setOtherUser] = useState<SafeUser | null>(null);
+  const [chatError, setChatError] = useState<string | null>(null);
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     if (scrollContainerRef.current) {
@@ -42,11 +45,36 @@ export function ChatWindow({
     };
     fetchOtherUser();
   }, [thread, currentUserId]);
+  useEffect(() => {
+    const checkPayment = async () => {
+      const contracts = await contractsService.listContracts();
+      const contract = contracts.find(
+        (c) =>
+        c.jobId === thread.jobId &&
+        c.clientId === thread.clientId &&
+        c.freelancerId === thread.freelancerId
+      );
+      if (contract && contract.paymentStatus === 'paid') {
+        setPaymentCompleted(true);
+      } else {
+        setPaymentCompleted(false);
+      }
+    };
+    checkPayment();
+  }, [thread]);
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
+    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i;
+    const phoneRegex = /(\+?\d[\d\s\-()]{7,15})/;
+    if (emailRegex.test(newMessage) || phoneRegex.test(newMessage)) {
+      setChatError('Sharing contact information is not allowed.');
+      setTimeout(() => setChatError(null), 5000);
+      return;
+    }
     onSendMessage(newMessage);
     setNewMessage('');
+    setChatError(null);
   };
   const displayName = otherUser ?
   otherUser.name :
@@ -104,10 +132,19 @@ export function ChatWindow({
 
       {/* Input */}
       <div className="p-4 border-t border-gray-800 bg-[#111827]">
+        {chatError &&
+        <div className="mb-2 flex items-center gap-2 text-red-400 text-xs bg-red-500/10 p-2 rounded-lg border border-red-500/20">
+            <AlertCircle className="w-4 h-4" />
+            {chatError}
+          </div>
+        }
         <form onSubmit={handleSend} className="flex gap-2">
           <Input
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={(e) => {
+              setNewMessage(e.target.value);
+              if (chatError) setChatError(null);
+            }}
             placeholder="Type a message..."
             className="flex-1" />
 

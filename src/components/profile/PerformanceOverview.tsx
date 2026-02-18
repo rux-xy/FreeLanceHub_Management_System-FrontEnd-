@@ -1,29 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/Cards';
-import { User } from '../../types';
+import { SafeUser } from '../../types';
+import { proposalsService } from '../../services/proposals.service';
+import { contractsService } from '../../services/contracts.service';
 interface PerformanceOverviewProps {
-  user: User;
+  user: SafeUser;
 }
 export function PerformanceOverview({ user }: PerformanceOverviewProps) {
+  const [totalProposals, setTotalProposals] = useState(0);
+  const [completedProjects, setCompletedProjects] = useState(0);
+  const [activeContracts, setActiveContracts] = useState(0);
+  useEffect(() => {
+    const loadStats = async () => {
+      const proposals = await proposalsService.listByFreelancer(user.id);
+      setTotalProposals(proposals.length);
+      const allContracts = await contractsService.listContracts();
+      const userContracts = allContracts.filter(
+        (c) => c.freelancerId === user.id
+      );
+      setCompletedProjects(
+        userContracts.filter((c) => c.status === 'completed').length
+      );
+      setActiveContracts(
+        userContracts.filter((c) => c.status === 'active').length
+      );
+    };
+    loadStats();
+  }, [user.id]);
   const stats = [
   {
     label: 'Total Proposals',
-    value: user.totalProposals || 0,
+    value: totalProposals,
     subtext: 'Submitted job applications'
   },
   {
     label: 'Completed Projects',
-    value: user.totalCompletedProjects || 0,
+    value: completedProjects,
     subtext: 'Successfully delivered'
   },
   {
-    label: 'Completion Rate',
-    value: `${user.completionRate || 0}%`,
-    subtext: 'Projects completed vs accepted'
-  },
-  {
     label: 'Active Contracts',
-    value: user.activeContracts || 0,
+    value: activeContracts,
     subtext: 'Currently ongoing work'
   }];
 
@@ -33,7 +50,7 @@ export function PerformanceOverview({ user }: PerformanceOverviewProps) {
         <CardTitle>Performance Overview</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {stats.map((stat, index) =>
           <div
             key={index}

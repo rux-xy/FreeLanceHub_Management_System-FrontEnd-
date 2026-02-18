@@ -1,13 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Contract } from '../../types';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter } from
-'../ui/Cards';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/Cards';
 import { StatusBadge, PaymentBadge } from '../ui/Badges';
 import { format } from 'date-fns';
 import { DollarSign, Calendar } from 'lucide-react';
@@ -15,9 +9,11 @@ interface ContractCardProps {
   contract: Contract;
   role: 'client' | 'freelancer' | 'admin';
 }
-export function ContractCard({ contract, role }: ContractCardProps) {
-  return (
-    <Link to={`/contracts/${contract.id}`}>
+export function ContractCard({
+  contract,
+  role
+}: ContractCardProps) {
+  return <Link to={`/contracts/${contract.id}`}>
       <Card className="h-full hover:border-teal-500/50 transition-all">
         <CardHeader className="flex justify-between items-start">
           <div>
@@ -43,14 +39,12 @@ export function ContractCard({ contract, role }: ContractCardProps) {
               <span>Started:</span>
               <span>{format(new Date(contract.startedAt), 'MMM d, yyyy')}</span>
             </div>
-            {contract.completedAt &&
-            <div className="flex justify-between">
+            {contract.completedAt && <div className="flex justify-between">
                 <span>Completed:</span>
                 <span>
                   {format(new Date(contract.completedAt), 'MMM d, yyyy')}
                 </span>
-              </div>
-            }
+              </div>}
           </div>
         </CardContent>
 
@@ -58,6 +52,5 @@ export function ContractCard({ contract, role }: ContractCardProps) {
           Click to view details & payment
         </CardFooter>
       </Card>
-    </Link>);
-
+    </Link>;
 }
