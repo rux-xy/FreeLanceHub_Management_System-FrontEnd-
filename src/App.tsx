@@ -49,6 +49,7 @@ import { Contact } from './pages/Contact';
 import { Terms } from './pages/Terms';
 import { Privacy } from './pages/Privacy';
 import { Cookies } from './pages/Cookies';
+
 // Wrapper component to handle location-based transitions
 function AnimatedRoutes() {
   const location = useLocation();
@@ -56,15 +57,14 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {/* Public Routes */}
-        <Route
-          path="/"
-          element={
-          <PageTransition>
-              <Home />
-            </PageTransition>
-          } />
-
-        <Route
+         <Route
+              path="/"
+              element={
+              <PageTransition>
+                  <Home />
+              </PageTransition>
+          }/>
+          <Route
           path="/login"
           element={
           <PageTransition>
@@ -201,7 +201,7 @@ function AnimatedRoutes() {
         <Route
           path="/jobs/create"
           element={
-          <ProtectedRoute requiredRole="client">
+          <ProtectedRoute requiredRole="CLIENT">
               <PageTransition>
                 <CreateJob />
               </PageTransition>
@@ -211,7 +211,7 @@ function AnimatedRoutes() {
         <Route
           path="/jobs/my"
           element={
-          <ProtectedRoute requiredRole="client">
+          <ProtectedRoute requiredRole="CLIENT">
               <PageTransition>
                 <MyJobs />
               </PageTransition>
@@ -223,7 +223,7 @@ function AnimatedRoutes() {
         <Route
           path="/jobs/applied"
           element={
-          <ProtectedRoute requiredRole="freelancer">
+          <ProtectedRoute requiredRole="FREELANCER">
               <PageTransition>
                 <AppliedJobs />
               </PageTransition>
@@ -233,7 +233,7 @@ function AnimatedRoutes() {
         <Route
           path="/jobs/saved"
           element={
-          <ProtectedRoute requiredRole="freelancer">
+          <ProtectedRoute requiredRole="FREELANCER">
               <PageTransition>
                 <SavedJobs />
               </PageTransition>
@@ -289,7 +289,7 @@ function AnimatedRoutes() {
         <Route
           path="/payments/checkout/:contractId"
           element={
-          <ProtectedRoute requiredRole="client">
+          <ProtectedRoute requiredRole="CLIENT">
               <PageTransition>
                 <Checkout />
               </PageTransition>

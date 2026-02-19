@@ -84,7 +84,7 @@ export function Profile() {
                     <div className="mt-2 flex items-center justify-center md:justify-start gap-3">
                       <RoleBadge role={profileUser.role} />
                       {profileUser.role === 'freelancer' &&
-                      <FreelancerRating user={profileUser} />
+                      <FreelancerRating user={profileUser as any} />
                       }
                     </div>
                   </div>
@@ -132,7 +132,9 @@ export function Profile() {
                     Member Since
                   </p>
                   <p className="text-white font-medium">
-                    {format(new Date(profileUser.createdAt), 'MMMM d, yyyy')}
+                    {profileUser.createdAt
+                        ? format(new Date(profileUser.createdAt), 'MMMM d, yyyy')
+                        : 'Recently joined'}
                   </p>
                 </div>
               </div>
@@ -141,8 +143,8 @@ export function Profile() {
         </Card>
 
         {profileUser.role === 'freelancer' &&
-        <>
-            <PerformanceOverview user={profileUser} />
+            <>
+              <PerformanceOverview user={profileUser as any} />
 
             {/* Proposals Section */}
             {freelancerProposals.length > 0 &&

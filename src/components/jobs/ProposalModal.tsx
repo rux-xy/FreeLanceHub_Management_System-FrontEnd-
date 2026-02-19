@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Modal } from "../ui/Modal";
-import { Button, Input, Textarea } from "../ui/FormControls";
-import { useProposals } from "../../state/proposals";
-import { useAppliedSaved } from "../../state/appliedSaved";
-import { Proposal } from "../../types";
+import React, { useEffect, useState } from 'react';
+import { Modal } from '../ui/Modal';
+import { Button, Input, Textarea } from '../ui/FormControls';
+import { useProposals } from '../../state/proposals';
+import { useAppliedSaved } from '../../state/appliedSaved';
+import { Proposal } from '../../types';
+
 interface ProposalModalProps {
   isOpen: boolean;
   onClose: () => void;
   jobId: string;
   jobTitle: string;
+  // RESTORED: pass existing proposal to enable edit mode
   existingProposal?: Proposal | null;
 }
+
 export function ProposalModal({
   isOpen,
   onClose,
@@ -20,25 +23,31 @@ export function ProposalModal({
 }: ProposalModalProps) {
   const { createProposal, updateProposal, isLoading } = useProposals();
   const { applyToJob } = useAppliedSaved();
-  const [coverLetter, setCoverLetter] = useState("");
-  const [bidAmount, setBidAmount] = useState("");
-  const [estimatedDays, setEstimatedDays] = useState("");
+
+  const [coverLetter, setCoverLetter] = useState('');
+  const [bidAmount, setBidAmount] = useState('');
+  const [estimatedDays, setEstimatedDays] = useState('');
+
   const isEditMode = !!existingProposal;
+
+  // RESTORED: pre-fill form when opening in edit mode
   useEffect(() => {
     if (existingProposal) {
       setCoverLetter(existingProposal.coverLetter);
       setBidAmount(String(existingProposal.bidAmount));
       setEstimatedDays(String(existingProposal.estimatedDays));
     } else {
-      setCoverLetter("");
-      setBidAmount("");
-      setEstimatedDays("");
+      setCoverLetter('');
+      setBidAmount('');
+      setEstimatedDays('');
     }
   }, [existingProposal, isOpen]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       if (isEditMode && existingProposal) {
+        // RESTORED: call backend update endpoint
         await updateProposal(existingProposal.id, {
           coverLetter,
           bidAmount: Number(bidAmount),
@@ -55,23 +64,20 @@ export function ProposalModal({
       }
       onClose();
       if (!isEditMode) {
-        setCoverLetter("");
-        setBidAmount("");
-        setEstimatedDays("");
+        setCoverLetter('');
+        setBidAmount('');
+        setEstimatedDays('');
       }
     } catch (error) {
       console.error(error);
     }
   };
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={
-        isEditMode
-          ? `Edit Proposal: ${jobTitle}`
-          : `Submit Proposal: ${jobTitle}`
-      }
+      title={isEditMode ? `Edit Proposal: ${jobTitle}` : `Submit Proposal: ${jobTitle}`}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
@@ -107,7 +113,7 @@ export function ProposalModal({
             Cancel
           </Button>
           <Button type="submit" isLoading={isLoading}>
-            {isEditMode ? "Update Proposal" : "Submit Proposal"}
+            {isEditMode ? 'Update Proposal' : 'Submit Proposal'}
           </Button>
         </div>
       </form>

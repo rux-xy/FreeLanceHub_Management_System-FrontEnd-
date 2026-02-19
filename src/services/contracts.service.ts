@@ -1,67 +1,32 @@
 import { Contract, ContractStatus, PaymentStatus } from '../types';
-import {
-  STORAGE_KEYS,
-  readStore,
-  writeStore,
-  generateId,
-  nowISO } from
-'../lib/storage';
+import { api } from '../lib/axios';
 
 export const contractsService = {
   async listContracts(): Promise<Contract[]> {
-    return readStore<Contract[]>(STORAGE_KEYS.CONTRACTS, []);
+    const res = await api.get('/contracts/my');
+    return res.data as Contract[];
   },
+
   async getContractById(id: string): Promise<Contract | undefined> {
-    const all = readStore<Contract[]>(STORAGE_KEYS.CONTRACTS, []);
-    return all.find((c) => c.id === id);
+    try {
+      const res = await api.get(`/contracts/${id}`);
+      return res.data as Contract;
+    } catch {
+      return undefined;
+    }
   },
-  async createFromAcceptedProposal(
-  jobId: string,
-  proposalId: string,
-  clientId: string,
-  freelancerId: string,
-  agreedPrice: number)
-  : Promise<Contract> {
-    const contracts = readStore<Contract[]>(STORAGE_KEYS.CONTRACTS, []);
-    const contract: Contract = {
-      id: generateId(),
-      jobId,
-      proposalId,
-      clientId,
-      freelancerId,
-      agreedPrice,
-      status: 'active',
-      startedAt: nowISO(),
-      paymentStatus: 'unpaid'
-    };
-    contracts.push(contract);
-    writeStore(STORAGE_KEYS.CONTRACTS, contracts);
-    return contract;
+
+  async updateStatus(contractId: string, status: ContractStatus): Promise<Contract> {
+    const res = await api.patch(`/contracts/${contractId}/status?status=${status}`);
+    return res.data as Contract;
   },
-  async updateStatus(
-  contractId: string,
-  status: ContractStatus)
-  : Promise<Contract> {
-    const contracts = readStore<Contract[]>(STORAGE_KEYS.CONTRACTS, []);
-    const idx = contracts.findIndex((c) => c.id === contractId);
-    if (idx === -1) throw new Error('Contract not found');
-    contracts[idx].status = status;
-    if (status === 'completed') contracts[idx].completedAt = nowISO();
-    writeStore(STORAGE_KEYS.CONTRACTS, contracts);
-    return contracts[idx];
-  },
+
   async completeContract(contractId: string): Promise<Contract> {
     return this.updateStatus(contractId, 'completed');
   },
-  async updatePaymentStatus(
-  contractId: string,
-  paymentStatus: PaymentStatus)
-  : Promise<Contract> {
-    const contracts = readStore<Contract[]>(STORAGE_KEYS.CONTRACTS, []);
-    const idx = contracts.findIndex((c) => c.id === contractId);
-    if (idx === -1) throw new Error('Contract not found');
-    contracts[idx].paymentStatus = paymentStatus;
-    writeStore(STORAGE_KEYS.CONTRACTS, contracts);
-    return contracts[idx];
-  }
+
+  async updatePaymentStatus(contractId: string, paymentStatus: PaymentStatus): Promise<Contract> {
+    const res = await api.patch(`/contracts/${contractId}/payment-status?paymentStatus=${paymentStatus}`);
+    return res.data as Contract;
+  },
 };

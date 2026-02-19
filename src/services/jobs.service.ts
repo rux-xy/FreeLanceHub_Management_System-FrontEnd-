@@ -1,61 +1,44 @@
 import { Job, CreateJobInput, JobStatus } from '../types';
-import {
-  STORAGE_KEYS,
-  readStore,
-  writeStore,
-  generateId,
-  nowISO } from
-'../lib/storage';
+import { api } from '../lib/axios';
 
 export const jobsService = {
   async listJobs(): Promise<Job[]> {
-    return readStore<Job[]>(STORAGE_KEYS.JOBS, []);
+    const res = await api.get('/jobs');
+    return res.data as Job[];
   },
+
   async getJobById(id: string): Promise<Job | undefined> {
-    const jobs = readStore<Job[]>(STORAGE_KEYS.JOBS, []);
-    return jobs.find((j) => j.id === id);
+    try {
+      const res = await api.get(`/jobs/${id}`);
+      console.log('getJobById response:', res.data); // 👈 add this
+      return res.data as Job;
+    } catch (err) {
+      console.error('getJobById failed:', err); // 👈 and this
+      return undefined;
+    }
   },
-  async createJob(
-  input: CreateJobInput,
-  userId: string,
-  userName: string)
-  : Promise<Job> {
-    const jobs = readStore<Job[]>(STORAGE_KEYS.JOBS, []);
-    const now = nowISO();
-    const job: Job = {
-      id: generateId(),
-      ...input,
-      createdBy: userId,
-      createdByName: userName,
-      status: 'open',
-      createdAt: now,
-      updatedAt: now
-    };
-    jobs.push(job);
-    writeStore(STORAGE_KEYS.JOBS, jobs);
-    return job;
+
+  async createJob(input: CreateJobInput, userId: string, userName: string): Promise<Job> {
+    const res = await api.post('/jobs', input);
+    return res.data as Job;
   },
+
   async updateJobStatus(jobId: string, status: JobStatus): Promise<Job> {
-    const jobs = readStore<Job[]>(STORAGE_KEYS.JOBS, []);
-    const idx = jobs.findIndex((j) => j.id === jobId);
-    if (idx === -1) throw new Error('Job not found');
-    jobs[idx].status = status;
-    jobs[idx].updatedAt = nowISO();
-    writeStore(STORAGE_KEYS.JOBS, jobs);
-    return jobs[idx];
+    const res = await api.patch(`/jobs/${jobId}/status?status=${status}`);
+    return res.data as Job;
   },
+
   async toggleFlag(jobId: string): Promise<Job> {
-    const jobs = readStore<Job[]>(STORAGE_KEYS.JOBS, []);
-    const idx = jobs.findIndex((j) => j.id === jobId);
-    if (idx === -1) throw new Error('Job not found');
-    jobs[idx].flagged = !jobs[idx].flagged;
-    jobs[idx].updatedAt = nowISO();
-    writeStore(STORAGE_KEYS.JOBS, jobs);
-    return jobs[idx];
+    const res = await api.patch(`/jobs/${jobId}/flag`);
+    return res.data as Job;
   },
+
   async deleteJob(jobId: string): Promise<void> {
-    let jobs = readStore<Job[]>(STORAGE_KEYS.JOBS, []);
-    jobs = jobs.filter((j) => j.id !== jobId);
-    writeStore(STORAGE_KEYS.JOBS, jobs);
-  }
+    await api.delete(`/jobs/${jobId}`);
+  },
+
+  async getMyJobs(): Promise<Job[]> {
+    const res = await api.get('/jobs/my-jobs');
+    return res.data as Job[];
+  },
 };
