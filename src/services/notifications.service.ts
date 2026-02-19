@@ -1,70 +1,45 @@
 import { Notification, NotificationType } from '../types';
-import {
-  STORAGE_KEYS,
-  readStore,
-  writeStore,
-  generateId,
-  nowISO } from
-'../lib/storage';
+import { api } from '../lib/axios';
 
 export const notificationsService = {
   async listByUser(userId: string): Promise<Notification[]> {
-    const all = readStore<Notification[]>(STORAGE_KEYS.NOTIFICATIONS, []);
-    return all.
-    filter((n) => n.userId === userId).
-    sort(
-      (a, b) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    const res = await api.get('/notifications');
+    return res.data as Notification[];
   },
+
+  // The state files still call this directly in several places.
+  // It's a no-op now because the backend creates notifications as
+  // side effects — but returning a dummy keeps TypeScript happy.
   async createNotification(
-  userId: string,
-  type: NotificationType,
-  title: string,
-  message: string,
-  relatedId: string)
-  : Promise<Notification> {
-    const notifications = readStore<Notification[]>(
-      STORAGE_KEYS.NOTIFICATIONS,
-      []
-    );
-    const notification: Notification = {
-      id: generateId(),
+      userId: string,
+      type: NotificationType,
+      title: string,
+      message: string,
+      relatedId: string
+  ): Promise<Notification> {
+    return {
+      id: '',
       userId,
       type,
       title,
       message,
       relatedId,
       isRead: false,
-      createdAt: nowISO()
+      createdAt: new Date().toISOString(),
     };
-    notifications.push(notification);
-    writeStore(STORAGE_KEYS.NOTIFICATIONS, notifications);
-    return notification;
   },
+
   async markRead(notificationId: string): Promise<void> {
-    const notifications = readStore<Notification[]>(
-      STORAGE_KEYS.NOTIFICATIONS,
-      []
-    );
-    const idx = notifications.findIndex((n) => n.id === notificationId);
-    if (idx !== -1) {
-      notifications[idx].isRead = true;
-      writeStore(STORAGE_KEYS.NOTIFICATIONS, notifications);
-    }
+    await api.patch(`/notifications/${notificationId}/read`);
   },
+
   async markAllRead(userId: string): Promise<void> {
-    const notifications = readStore<Notification[]>(
-      STORAGE_KEYS.NOTIFICATIONS,
-      []
-    );
-    notifications.forEach((n) => {
-      if (n.userId === userId) n.isRead = true;
-    });
-    writeStore(STORAGE_KEYS.NOTIFICATIONS, notifications);
+    await api.post('/notifications/read-all');
   },
+
   async getUnreadCount(userId: string): Promise<number> {
-    const all = readStore<Notification[]>(STORAGE_KEYS.NOTIFICATIONS, []);
-    return all.filter((n) => n.userId === userId && !n.isRead).length;
-  }
+    const res = await api.get('/notifications');
+    const notifications = res.data as Notification[];
+    return notifications.filter((n) => !n.isRead).length;
+  },
 };

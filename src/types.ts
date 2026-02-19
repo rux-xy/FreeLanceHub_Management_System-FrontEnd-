@@ -3,7 +3,7 @@
 // ============================================================
 
 // ---- Roles & Categories ----
-export type UserRole = 'client' | 'freelancer' | 'admin';
+export type UserRole = 'CLIENT' | 'FREELANCER' | 'ADMIN' | 'PENDING';
 
 export type ServiceCategory =
 'Assignment Help' |
