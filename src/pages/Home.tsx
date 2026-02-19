@@ -39,7 +39,7 @@ export function Home() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-90"
         >
-          <source src="public\herobgvid.mp4" type="video/mp4" />
+          <source src="/herobgvid.mp4" type="video/mp4" />
         </video>
 
         {/* Dark Overlay for Readability */}
