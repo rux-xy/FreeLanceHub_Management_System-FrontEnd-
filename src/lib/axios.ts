@@ -2,7 +2,7 @@ import axios from 'axios';
 import { STORAGE_KEYS, readStore } from './storage';
 
 const api = axios.create({
-  baseURL: "https://freelance-backend-development.onrender.com/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 api.interceptors.request.use((config) => {
