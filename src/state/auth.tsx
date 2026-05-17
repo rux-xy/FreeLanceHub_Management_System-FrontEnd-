@@ -31,12 +31,26 @@ export function AuthProvider({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    authService.getMe().then((u) => {
-      setUser(u);
-      setLoading(false);
-    });
-  }, []);
+// src/state/auth.tsx
+useEffect(() => {
+  const token = readStore<string | null>(STORAGE_KEYS.TOKEN, null);
+  
+  if (!token) {
+    // No token — no need to hit the backend
+    setLoading(false);
+    return;
+  }
+
+  // Try to restore user from cache immediately
+  const cached = readStore<SafeUser | null>(STORAGE_KEYS.CURRENT_USER, null);
+  if (cached) setUser(cached);
+
+  // Then verify with backend in background
+  authService.getMe().then((u) => {
+    if (u) setUser(u);
+    setLoading(false);
+  }).catch(() => setLoading(false)); // ← always unblock on error
+}, []);
 
   const login = useCallback(async (emailOrInput: string | LoginInput, password?: string) => {
     try {
