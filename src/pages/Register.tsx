@@ -10,7 +10,7 @@ import { SafeUser } from '../types';
 
 declare const google: any;
 
-const GOOGLE_CLIENT_ID = '962166256032-k7ihoni7cj63qtmnbpqg8cs2b3sap5qn.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
 
 export function Register() {
   const [name, setName] = useState('');
