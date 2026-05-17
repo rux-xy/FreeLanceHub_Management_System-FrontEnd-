@@ -26,17 +26,22 @@ export const authService = {
     removeStore(STORAGE_KEYS.CURRENT_USER);
   },
 
-  async getMe(): Promise<SafeUser | null> {
-    try {
-      const res = await api.get('/auth/me');
-      const user: SafeUser = res.data;
-      writeStore(STORAGE_KEYS.CURRENT_USER, user);
-      return user;
-    } catch {
-      return null;
-    }
-  },
+// src/services/auth.service.ts
+async getMe(): Promise<SafeUser | null> {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000); // 5s max
 
+    const res = await api.get('/auth/me', { signal: controller.signal });
+    clearTimeout(timeout);
+    const user: SafeUser = res.data;
+    writeStore(STORAGE_KEYS.CURRENT_USER, user);
+    return user;
+  } catch {
+    return null; // timeout or error — just return null
+  }
+},
+  
   async updateProfile(userId: string, data: { name?: string; bio?: string }): Promise<SafeUser> {
     const res = await api.put('/auth/profile', data);
     const user: SafeUser = res.data;
